@@ -11,7 +11,13 @@ public class User{ // * User Class that stores users in database
     @Indexed(unique = true)
     public String roll_no;
     public String name;
-    public String username;
-    public String password; // ! Hashed
+    public String password; 
+    public String email;
+
+    public User(String roll_no, String name, String email){
+        this.roll_no = roll_no;
+        this.name = name;
+        this.email = email;
+    }
     
 }
