@@ -15,6 +15,16 @@ public class Utils {
             return null;
         }
     }
+
+    public String isLoggedInUnverified(HttpSession session){
+        try{
+            String roll_no = (String) session.getAttribute("unverified_roll_no");
+            return roll_no;
+        }
+        catch(Exception E){
+            return null;
+        }
+    }
     
     public String otpGenerator(){
         String otp = "";
