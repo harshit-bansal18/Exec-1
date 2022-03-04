@@ -6,6 +6,8 @@ import com.exec.model.GBM;
 import com.exec.service.GBMService;
 import java.util.*;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,13 +96,27 @@ public class GBMController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody Map<String, String> body) {
+    public ResponseEntity<Object> login(@RequestBody Map<String, String> body, HttpSession session) {
+
+        Map<String,String> response = new HashMap<>();
+
         try{
+
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no != null)
+            {
+                response.put("message", "Already logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
             GBM gbm = gbmservice.getGBMByRoll(body.get("roll_no"));
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if(! passwordEncoder.matches(body.get("password"), gbm.password)){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                response.put("message", "Invalid credentials");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
+
+            session.setAttribute("roll_no", gbm.roll_no);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
