@@ -74,7 +74,36 @@ public class CandidateController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
+    @PostMapping("/addSeconder")
+    public ResponseEntity<Object> add_Seconder(@RequestBody Map<String,String> body){
+        try {
+            candidateservice.addSeconder(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+     @PostMapping("/addProposer")
+    public ResponseEntity<Object> add_Proposer(@RequestBody Map<String,String> body){
+        try {
+            candidateservice.addProposer(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+     @PostMapping("/addCampaigner")
+    public ResponseEntity<Object> add_Campaigner(@RequestBody Map<String,String> body){
+        try {
+            candidateservice.addCampaigner(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
     @PostMapping("/changePassword")
     public ResponseEntity<Object> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
 
