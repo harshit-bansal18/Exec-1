@@ -29,6 +29,7 @@ public class GBMController {
         this.gbmservice = gbmservice;
     }
 
+    //TODO: add the httpsession access level to admin when the class is made
     @PostMapping("/add")
     public ResponseEntity<Object> addGBM(@RequestBody Map<String, String> body) {
         try{
@@ -42,7 +43,7 @@ public class GBMController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> signup(@RequestBody Map<String, String> body) {
+    public ResponseEntity<Object> signup(@RequestBody Map<String, String> body, HttpSession session) {
         try
         {
             GBM gbm;
@@ -65,6 +66,8 @@ public class GBMController {
             String otp = utils.otpGenerator();
             gbmservice.setOtp(body.get("roll_no"), otp);
             emailSender.sendOTPMessage(gbm.email, gbm.name, otp);
+            session.setAttribute("unverified_roll_no", body.get("roll_no"));
+            session.setAttribute("unverified_access_level", "GBM");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
@@ -73,13 +76,21 @@ public class GBMController {
     }
 
     @PostMapping("/changePassword")
-    public ResponseEntity<Object> changePassword(@RequestBody Map<String, String> body) {
+    public ResponseEntity<Object> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         try{
-            GBM gbm = gbmservice.getGBMByRoll(body.get("roll_no"));
+            String roll_no = utils.isLoggedInUnverified(session);
             Map<String,String> response = new HashMap<>();
+
+            if(roll_no == null || !session.getAttribute("unverified_access_level").equals("GBM"))
+            {
+                response.put("message", "Invalid password change request");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            GBM gbm = gbmservice.getGBMByRoll(roll_no);
 
             if(! (gbm.otp).equals(body.get("otp"))){
                 response.put("message", "Invalid OTP");
@@ -87,7 +98,9 @@ public class GBMController {
             }
             
             String password = passwordEncoder.encode(body.get("password"));
-            gbmservice.activateGBM(body.get("roll_no"), password);
+            gbmservice.activateGBM(roll_no, password);
+            session.removeAttribute("unverified_roll_no");
+            session.removeAttribute("unverified_access_level");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
@@ -117,6 +130,29 @@ public class GBMController {
             }
 
             session.setAttribute("roll_no", gbm.roll_no);
+            session.setAttribute("access_level", "GBM");
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(HttpSession session) {
+
+        Map<String,String> response = new HashMap<>();
+
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "GBM not logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            session.removeAttribute("roll_no");
+            session.removeAttribute("access_level");
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
