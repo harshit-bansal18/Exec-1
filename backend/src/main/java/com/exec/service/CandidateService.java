@@ -44,7 +44,7 @@ public class CandidateService {
         GBM gbm = gbmService.getGBMByRoll(roll_no_gbm);
 
         if(!gbm.is_campaigner){
-            candidate.Campaigners.add(gbm);
+            candidate.Campaigners.add(roll_no_gbm);
             candidateRepository.save(candidate);
         }else{
             throw new RuntimeException();
@@ -55,9 +55,11 @@ public class CandidateService {
         
         Candidate candidate = getCandidateByRoll(roll_no_candidate);
         GBM gbm = gbmService.getGBMByRoll(roll_no_gbm);
+
         if(!gbm.is_campaigner){
-            candidate.Seconders.add(gbm);
-            candidate.Campaigners.add(gbm);
+            gbmService.setIsCampaigner(roll_no_gbm);
+            candidate.Seconders.add(roll_no_gbm);
+            candidate.Campaigners.add(roll_no_gbm);
             candidateRepository.save(candidate);
         }else{
             throw new RuntimeException();
@@ -69,8 +71,9 @@ public class CandidateService {
         GBM gbm = gbmService.getGBMByRoll(roll_no_gbm);
 
         if(!gbm.is_campaigner){
-            candidate.Proposers.add(gbm);
-            candidate.Campaigners.add(gbm);
+            gbmService.setIsCampaigner(roll_no_gbm);
+            candidate.Proposers.add(roll_no_gbm);
+            candidate.Campaigners.add(roll_no_gbm);
             candidateRepository.save(candidate);
         }else{
             throw new RuntimeException();

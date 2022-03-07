@@ -3,15 +3,21 @@ package com.exec.service;
 import com.exec.repository.GBMRepository;
 
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+import com.exec.model.Candidate;
 import com.exec.model.GBM;
 
 @Service
 public class GBMService {
     
     private final GBMRepository gbmRepository;
+    private final CandidateService candidateService;
 
-    public GBMService(GBMRepository gbmRepository) {
+    public GBMService(GBMRepository gbmRepository, CandidateService candidateService) {
         this.gbmRepository = gbmRepository;
+        this.candidateService = candidateService;
     }
 
     public void addGBM(GBM gbm) {
@@ -28,6 +34,70 @@ public class GBMService {
         gbm.is_activated = true;
         gbm.password = password;
         gbmRepository.save(gbm);
+    }
+
+    public void setIsCampaigner(String roll_no){
+        GBM gbm = getGBMByRoll(roll_no);
+        gbm.is_campaigner = true;
+        gbmRepository.save(gbm);
+    }
+
+    public void addCampainRequests(String roll_no_gbm, String roll_no_candidate){
+
+        GBM gbm = getGBMByRoll(roll_no_gbm);
+
+        if(!gbm.is_campaigner){
+            gbm.campaign_requests.add(roll_no_candidate);
+            gbmRepository.save(gbm);
+        }else{
+            throw new RuntimeException();
+        }
+    }
+
+    public List<Map<String, String>> viewCampaignRequests(String roll_no_gbm){
+
+        GBM gbm = getGBMByRoll(roll_no_gbm);
+        List<Map<String, String>> candidates = new ArrayList<Map<String, String>>();
+
+        for(String roll_no: gbm.campaign_requests){
+            Candidate candidate = candidateService.getCandidateByRoll(roll_no);
+            Map<String, String> candidate_details = new HashMap<String, String>();
+            candidate_details.put("name", candidate.name);
+            candidate_details.put("roll_no", candidate.roll_no);
+            candidate_details.put("email", candidate.email);
+            candidates.add(candidate_details);
+        }
+
+        return candidates;
+    }
+
+    public void acceptCampaignRequest(String roll_no_gbm, String roll_no_candidate){
+
+        GBM gbm = getGBMByRoll(roll_no_gbm);
+
+        if(!gbm.is_campaigner || gbm.campaign_requests.contains(roll_no_candidate)){
+            gbm.campaign_requests.clear();
+            setIsCampaigner(roll_no_gbm);
+            gbm.campaigner_of = roll_no_candidate;
+            gbmRepository.save(gbm);
+            candidateService.addCampaigner(roll_no_candidate, roll_no_gbm);
+        }else{
+            throw new RuntimeException();
+        }
+
+    }
+
+    public void rejectCampaignRequest(String roll_no_gbm, String roll_no_candidate){
+
+        GBM gbm = getGBMByRoll(roll_no_gbm);
+
+        if(gbm.campaign_requests.contains(roll_no_candidate)){
+            gbm.campaign_requests.remove(roll_no_candidate);
+            gbmRepository.save(gbm);
+        }else{
+            throw new RuntimeException();
+        }
+
     }
 
     public void setOtp(String roll_no, String otp) {

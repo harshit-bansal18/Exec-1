@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -153,6 +154,85 @@ public class GBMController {
 
             session.removeAttribute("roll_no");
             session.removeAttribute("access_level");
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/campaignRequests")
+    public ResponseEntity<Object> getCampaignRequests(HttpSession session) {
+
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            Map<String,String> response = new HashMap<>();
+
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "No GBM user logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            List<Map<String, String>> requests = gbmservice.viewCampaignRequests(roll_no);
+            return new ResponseEntity<Object>(requests, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/acceptCampaignRequest")
+    public ResponseEntity<Object> acceptCampaignRequest(@RequestBody Map<String, String> body, HttpSession session) {
+
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            Map<String,String> response = new HashMap<>();
+
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "No GBM user logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            GBM gbm = gbmservice.getGBMByRoll(roll_no);
+            try{
+                gbmservice.acceptCampaignRequest(roll_no, body.get("roll_no_candidate"));
+            }
+            catch(Exception E){
+                response.put("message", "Candidate did not request for campaign");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            emailSender.sendCampaignerAcceptanceMessage(body.get("email_candidate"), body.get("name_candidate"), gbm.name);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/rejectCampaignRequest")
+    public ResponseEntity<Object> rejectCampaignRequest(@RequestBody Map<String, String> body, HttpSession session) {
+
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            Map<String,String> response = new HashMap<>();
+
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "No GBM user logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            GBM gbm = gbmservice.getGBMByRoll(roll_no);
+            try{
+                gbmservice.rejectCampaignRequest(roll_no, body.get("roll_no_candidate"));
+            }
+            catch(Exception E){
+                response.put("message", "Candidate did not request for campaign");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            emailSender.sendCampaignerRejectionMessage(body.get("email_candidate"), body.get("name_candidate"), gbm.name);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
