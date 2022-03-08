@@ -1,28 +1,28 @@
 package com.exec.model;
 
-
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("Candidate")
 public class Candidate extends User{
     
-    public List<GBM> Campaigners;
-    public List<GBM> Seconders;
-    public List<GBM> Proposers;
+    public List<String> Campaigners;
+    public List<String> Seconders;
+    public List<String> Proposers;
+    public String post;
     // ! More variables to be inserted 
     
     public boolean is_activated;
     public String otp;
 
-    public Candidate(String roll_no, String name, String email) {
+    public Candidate(String roll_no, String name, String email, String post) {
         super(roll_no, name, email);
         this.is_activated = false;
-        this.Campaigners = new ArrayList<GBM>();
-        this.Seconders = new ArrayList<GBM>();
-        this.Proposers = new ArrayList<GBM>();
+        this.Campaigners = new ArrayList<String>();
+        this.Seconders = new ArrayList<String>();
+        this.Proposers = new ArrayList<String>();
+        this.post = post;
     }
 
 }

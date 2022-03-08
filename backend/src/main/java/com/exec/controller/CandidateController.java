@@ -3,7 +3,9 @@ package com.exec.controller;
 import com.exec.EmailServiceImpl;
 import com.exec.Utils;
 import com.exec.model.Candidate;
+import com.exec.model.GBM;
 import com.exec.service.CandidateService;
+import com.exec.service.GBMService;
 import java.util.*;
 
 import javax.servlet.http.HttpSession;
@@ -22,18 +24,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class CandidateController {
 
     private final CandidateService candidateservice;
+    private final GBMService gbmservice;
     private Utils utils = new Utils();
     private EmailServiceImpl emailSender= new EmailServiceImpl();
 
-    public CandidateController(CandidateService candidateservice) {
+    public CandidateController(CandidateService candidateservice, GBMService gbmservice) {
         this.candidateservice = candidateservice;
+        this.gbmservice = gbmservice;
     }
+    // First you signup with your roll , name and email. 
+    // If an object does not already exist in the candidate database yet, it will be created
+    // after the necessary checks. Otherwise rejected.
 
+    // Then you have to activate the candidate account. Such an account must have at least one proposer and once seconder
     //TODO: add the httpsession access level to admin when the class is made
     @PostMapping("/add")
     public ResponseEntity<Object> addCandidate(@RequestBody Map<String, String> body) {
         try{
-            Candidate new_candidate = new Candidate(body.get("roll_no"), body.get("name"), body.get("email"));
+            Candidate new_candidate = new Candidate(body.get("roll_no"), body.get("name"), body.get("email"), body.get("post"));
             candidateservice.addCandidate(new_candidate);
             return ResponseEntity.status(HttpStatus.CREATED).build(); 
         }
@@ -53,13 +61,13 @@ public class CandidateController {
                 candidate = candidateservice.getCandidateByRoll(body.get("roll_no"));
             }
             catch(Exception E){
-                response.put("message", "No student with this roll no.");
+                response.put("message", "No candidate with this roll no.");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
             if(candidate.is_activated == true)
             {
-                response.put("message", "Student already signed up");
+                response.put("message", "Candidate already signed up");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
@@ -69,11 +77,44 @@ public class CandidateController {
             session.setAttribute("unverified_roll_no", body.get("roll_no"));
             session.setAttribute("unverified_access_level", "Candidate");
             return ResponseEntity.status(HttpStatus.OK).build();
+  
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @PostMapping("/activate")
+    public ResponseEntity<Object> activateCandidate(@RequestBody Map<String, String> body, HttpSession session) {
+        try 
+        {
+            Map<String, String> response = new HashMap<String, String>();
+            if(utils.isLoggedIn(session) != null || utils.isLoggedInUnverified(session) != null){
+                response.put("message", "User already logged in.");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            Candidate candidate = candidateservice.getCandidateByRoll(body.get("roll_no"));
+            if(candidate.is_activated == true)
+            {
+                response.put("message", "Student already signed up");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            else{
+                String otp = utils.otpGenerator();
+                candidateservice.setOtp(body.get("roll_no"), otp);
+                emailSender.sendOTPMessage(candidate.email, candidate.name, otp);
+                session.setAttribute("unverified_roll_no", body.get("roll_no"));
+                session.setAttribute("unverified_access_level", "Candidate");
+                return ResponseEntity.status(HttpStatus.OK).build();
+            }
+        }
+        catch (Exception E) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    //TODO: take a look at the real working of the EC ki seconders/proposers add kab hote hain
     @PostMapping("/addSeconder")
     public ResponseEntity<Object> add_Seconder(@RequestBody Map<String,String> body){
         try {
@@ -84,7 +125,9 @@ public class CandidateController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-     @PostMapping("/addProposer")
+
+    //TODO: same as in that of the seconder
+    @PostMapping("/addProposer")
     public ResponseEntity<Object> add_Proposer(@RequestBody Map<String,String> body){
         try {
             candidateservice.addProposer(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
@@ -94,16 +137,39 @@ public class CandidateController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-     @PostMapping("/addCampaigner")
-    public ResponseEntity<Object> add_Campaigner(@RequestBody Map<String,String> body){
+     @PostMapping("/requestCampaigner")
+    public ResponseEntity<Object> request_Campaigner(@RequestBody Map<String,String> body, HttpSession session){
         try {
-            candidateservice.addCampaigner(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+            Map<String, String> response = new HashMap<String, String>();
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "No candidate logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            GBM requested_gbm;
+            try{
+                requested_gbm = gbmservice.getGBMByRoll(body.get("gbm_roll_no"));
+            }
+            catch(Exception E){
+                response.put("message", "No GBM with this roll no.");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+
+            if(requested_gbm.is_campaigner){
+                response.put("message", "GBM already a campaigner");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+            
+            gbmservice.addCampainRequests(requested_gbm.roll_no, roll_no);
+            emailSender.sendCampaignRequestMessage(requested_gbm.email, requested_gbm.name, candidateservice.getCandidateByRoll(roll_no).name);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
     @PostMapping("/changePassword")
     public ResponseEntity<Object> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
 
