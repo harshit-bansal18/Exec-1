@@ -238,4 +238,24 @@ public class GBMController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @GetMapping("/form")
+    public ResponseEntity<Object> getform(@RequestBody Map<String,String> body, HttpSession session){
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            Map<String,String> response = new HashMap<>();
+
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "No GBM user logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            response.put("form_link",gbmservice.get_form_link(body.get("roll_no")));
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch (Exception E) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }

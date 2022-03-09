@@ -254,4 +254,21 @@ public class CandidateController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @PostMapping("/addform")
+    public ResponseEntity<Object> add_form_link(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "Candidate not logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            candidateservice.add_form(roll_no, body.get("form_link"));
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 }

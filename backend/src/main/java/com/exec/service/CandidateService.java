@@ -1,5 +1,7 @@
 package com.exec.service;
 
+import javax.management.RuntimeErrorException;
+
 import com.exec.model.Candidate;
 import com.exec.model.GBM;
 import com.exec.repository.CandidateRepository;
@@ -89,4 +91,14 @@ public class CandidateService {
                 .orElseThrow(() -> new RuntimeException("No GBM found with roll_no: " + roll_no));
     }
 
+    public void add_form(String roll_no_candidate, String form_link){
+        Candidate candidate = getCandidateByRoll(roll_no_candidate);
+        if(candidate.is_activated == true){
+            candidate.form_link = form_link;
+            candidateRepository.save(candidate);
+        }
+        else{
+            throw new RuntimeException();
+        }
+    }
 }

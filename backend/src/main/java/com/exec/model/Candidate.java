@@ -11,6 +11,7 @@ public class Candidate extends User{
     public List<String> Seconders;
     public List<String> Proposers;
     public String post;
+    public String form_link;
     // ! More variables to be inserted 
     
     public boolean is_activated;

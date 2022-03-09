@@ -107,5 +107,8 @@ public class GBMService {
         gbm.otp = otp;
         gbmRepository.save(gbm);
     }
-
+    public String get_form_link(String roll_no){
+        Candidate candidate = candidateService.getCandidateByRoll(roll_no);
+        return candidate.form_link;
+    }
 }
