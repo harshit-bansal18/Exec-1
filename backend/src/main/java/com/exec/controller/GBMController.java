@@ -224,7 +224,6 @@ public class GBMController {
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
-            GBM gbm = gbmservice.getGBMByRoll(roll_no);
             try{
                 gbmservice.rejectCampaignRequest(roll_no, body.get("roll_no_candidate"));
             }
@@ -232,7 +231,7 @@ public class GBMController {
                 response.put("message", "Candidate did not request for campaign");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-            emailSender.sendCampaignerRejectionMessage(body.get("email_candidate"), body.get("name_candidate"), gbm.name);
+            
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){

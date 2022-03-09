@@ -114,29 +114,29 @@ public class CandidateController {
         }
     }
 
-    //TODO: take a look at the real working of the EC ki seconders/proposers add kab hote hain
-    @PostMapping("/addSeconder")
-    public ResponseEntity<Object> add_Seconder(@RequestBody Map<String,String> body){
-        try {
-            candidateservice.addSeconder(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        catch(Exception E){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
+    // //TODO: take a look at the real working of the EC ki seconders/proposers add kab hote hain
+    // @PostMapping("/addSeconder")
+    // public ResponseEntity<Object> add_Seconder(@RequestBody Map<String,String> body){
+    //     try {
+    //         candidateservice.addSeconder(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+    //         return ResponseEntity.status(HttpStatus.OK).build();
+    //     }
+    //     catch(Exception E){
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    //     }
+    // }
 
-    //TODO: same as in that of the seconder
-    @PostMapping("/addProposer")
-    public ResponseEntity<Object> add_Proposer(@RequestBody Map<String,String> body){
-        try {
-            candidateservice.addProposer(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        catch(Exception E){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
+    // //TODO: same as in that of the seconder
+    // @PostMapping("/addProposer")
+    // public ResponseEntity<Object> add_Proposer(@RequestBody Map<String,String> body){
+    //     try {
+    //         candidateservice.addProposer(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+    //         return ResponseEntity.status(HttpStatus.OK).build();
+    //     }
+    //     catch(Exception E){
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    //     }
+    // }
      @PostMapping("/requestCampaigner")
     public ResponseEntity<Object> request_Campaigner(@RequestBody Map<String,String> body, HttpSession session){
         try {

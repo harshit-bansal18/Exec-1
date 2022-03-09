@@ -1,7 +1,7 @@
 package com.exec.service;
-
 import com.exec.repository.GBMRepository;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -9,6 +9,7 @@ import java.util.*;
 import com.exec.model.Candidate;
 import com.exec.model.GBM;
 
+@Lazy
 @Service
 public class GBMService {
     
@@ -65,6 +66,7 @@ public class GBMService {
             candidate_details.put("name", candidate.name);
             candidate_details.put("roll_no", candidate.roll_no);
             candidate_details.put("email", candidate.email);
+            candidate_details.put("post", candidate.post);
             candidates.add(candidate_details);
         }
 
