@@ -210,33 +210,4 @@ public class GBMController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
-    @PostMapping("/rejectCampaignRequest")
-    public ResponseEntity<Object> rejectCampaignRequest(@RequestBody Map<String, String> body, HttpSession session) {
-
-        try{
-            String roll_no = utils.isLoggedIn(session);
-            Map<String,String> response = new HashMap<>();
-
-            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
-            {
-                response.put("message", "No GBM user logged in");
-                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
-            }
-
-            GBM gbm = gbmservice.getGBMByRoll(roll_no);
-            try{
-                gbmservice.rejectCampaignRequest(roll_no, body.get("roll_no_candidate"));
-            }
-            catch(Exception E){
-                response.put("message", "Candidate did not request for campaign");
-                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
-            }
-            emailSender.sendCampaignerRejectionMessage(body.get("email_candidate"), body.get("name_candidate"), gbm.name);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        catch(Exception E){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
 }
