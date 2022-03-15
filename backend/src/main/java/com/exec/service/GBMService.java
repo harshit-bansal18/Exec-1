@@ -107,8 +107,22 @@ public class GBMService {
         gbm.otp = otp;
         gbmRepository.save(gbm);
     }
-    public String get_form_link(String roll_no){
+    public List<String> get_form_link(String roll_no){
         Candidate candidate = candidateService.getCandidateByRoll(roll_no);
-        return candidate.form_link;
+        List<String> forms = new ArrayList<String>();
+        for (Map.Entry<String,Integer> entry : candidate.form_link.entrySet()){
+            forms.add(entry.getKey());
+        }
+        return forms;
+    }
+
+    public String get_name(String roll_no){
+        Candidate candidate = candidateService.getCandidateByRoll(roll_no);
+        return candidate.name;
+    }
+
+    public String get_post(String roll_no){
+        Candidate candidate = candidateService.getCandidateByRoll(roll_no);
+        return candidate.post;
     }
 }

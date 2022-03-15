@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -264,8 +265,46 @@ public class CandidateController {
                 response.put("message", "Candidate not logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-            candidateservice.add_form(roll_no, body.get("form_link"));
-            return ResponseEntity.status(HttpStatus.OK).build();
+            response.put("pk",Integer.toString(candidateservice.add_form(roll_no, body.get("form_link"))));
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/removeform")
+    public ResponseEntity<Object> remove_form_link(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "Candidate not logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            candidateservice.remove_form(roll_no, body.get("form_link"));
+    
+           return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/viewmyforms")
+    public ResponseEntity<Object> view_my_forms(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "Candidate not logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            List <String> forms = candidateservice.view_forms(roll_no); 
+            for (Integer i = 0; i < forms.size(); ++i){
+                response.put("form" + i.toString(), forms.get(i));
+            }
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

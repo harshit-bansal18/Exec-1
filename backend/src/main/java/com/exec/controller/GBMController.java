@@ -250,8 +250,13 @@ public class GBMController {
                 response.put("message", "No GBM user logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-
-            response.put("form_link",gbmservice.get_form_link(body.get("roll_no")));
+            List<String> forms = gbmservice.get_form_link(body.get("roll_no"));
+            response.put("name",gbmservice.get_name(body.get("roll_no")));
+            response.put("post",gbmservice.get_post(body.get("roll_no")));
+         
+            for (Integer i = 0; i < forms.size(); ++i){
+                response.put("form" + i.toString(), forms.get(i));
+            }
             return new ResponseEntity<Object>(response, HttpStatus.OK);
         }
         catch (Exception E) {
