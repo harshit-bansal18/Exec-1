@@ -38,11 +38,11 @@ public class CandidateController {
 
     // Then you have to activate the candidate account. Such an account must have at least one proposer and once seconder
     //TODO: add the httpsession access level to admin when the class is made
-    @PostMapping("/add")
-    public ResponseEntity<Object> addCandidate(@RequestBody Map<String, String> body) {
+    @PostMapping("/fileNomination")
+    public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body) {
         try{
             Candidate new_candidate = new Candidate(body.get("roll_no"), body.get("name"), body.get("email"), body.get("post"));
-            candidateservice.addCandidate(new_candidate);
+            candidateservice.fileNomination(new_candidate);
             return ResponseEntity.status(HttpStatus.CREATED).build(); 
         }
         catch(Exception E){
