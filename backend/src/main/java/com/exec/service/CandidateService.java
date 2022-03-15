@@ -1,11 +1,16 @@
 package com.exec.service;
 
+import java.util.ArrayList;
+
+import javax.management.RuntimeErrorException;
+
 import com.exec.model.Candidate;
 import com.exec.model.GBM;
 import com.exec.model.Admin;
 import com.exec.repository.CandidateRepository;
 import com.exec.repository.GBMRepository;
 import com.exec.repository.AdminRepository;
+import java.util.*;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -97,4 +102,48 @@ public class CandidateService {
                 .orElseThrow(() -> new RuntimeException("No GBM found with roll_no: " + roll_no));
     }
 
+    public Integer add_form(String roll_no_candidate, String form_link){
+        Candidate candidate = getCandidateByRoll(roll_no_candidate);
+        if(candidate.is_activated == true){
+            List<Integer> value_set = new ArrayList<Integer>();
+            for (Map.Entry<String,Integer> entry : candidate.form_link.entrySet()){
+                value_set.add(entry.getValue());
+            }
+            Integer new_pk = 0;
+            for ( int i =0; i<value_set.size();++i){
+                if(value_set.get(i)>new_pk){
+                    new_pk = value_set.get(i);
+                }
+            }
+            new_pk = new_pk +1;
+            candidate.form_link.put(form_link,new_pk);
+            candidateRepository.save(candidate);
+            return new_pk;
+            // return 1;
+        }
+        else{
+            throw new RuntimeException();
+        }
+    }
+    public void remove_form(String roll_no, String link){
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true){
+            candidate.form_link.remove(link);
+            candidateRepository.save(candidate);
+        }
+        else{
+            throw new RuntimeException();
+        }
+    }
+
+    public ArrayList<String> view_forms(String roll_no){
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true){
+            Set<String> key_set = candidate.form_link.keySet();
+            return new ArrayList<String>(key_set);
+        }
+        else{
+            throw new RuntimeException();
+        }
+    }
 }
