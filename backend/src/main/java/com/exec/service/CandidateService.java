@@ -2,6 +2,8 @@ package com.exec.service;
 
 import java.util.ArrayList;
 
+// import javax.management.RuntimeErrorException;
+
 import com.exec.model.Candidate;
 import com.exec.model.GBM;
 import com.exec.model.Admin;
@@ -65,35 +67,6 @@ public class CandidateService {
             throw new RuntimeException();
         }
     }
-
-    // public void addSeconder(String roll_no_candidate, String roll_no_gbm){
-        
-    //     Candidate candidate = getCandidateByRoll(roll_no_candidate);
-    //     GBM gbm = gbmService.getGBMByRoll(roll_no_gbm);
-
-    //     if(!gbm.is_campaigner){
-    //         gbmService.setIsCampaigner(roll_no_gbm);
-    //         candidate.Seconders.add(roll_no_gbm);
-    //         candidate.Campaigners.add(roll_no_gbm);
-    //         candidateRepository.save(candidate);
-    //     }else{
-    //         throw new RuntimeException();
-    //     }
-    // }
-
-    // public void addProposer(String roll_no_candidate, String roll_no_gbm){
-    //     Candidate candidate = getCandidateByRoll(roll_no_candidate);
-    //     GBM gbm = gbmService.getGBMByRoll(roll_no_gbm);
-
-    //     if(!gbm.is_campaigner){
-    //         gbmService.setIsCampaigner(roll_no_gbm);
-    //         candidate.Proposers.add(roll_no_gbm);
-    //         candidate.Campaigners.add(roll_no_gbm);
-    //         candidateRepository.save(candidate);
-    //     }else{
-    //         throw new RuntimeException();
-    //     }
-    // }
 
     public GBM getGBMByRoll(String roll_no) {
         return gbmRepository.findById(roll_no)
