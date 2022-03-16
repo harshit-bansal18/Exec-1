@@ -8,6 +8,7 @@ public class GBM extends User{
     
     public boolean is_campaigner;
     public boolean is_activated;
+    public boolean applied_for_candidature;
     public List<String> campaign_requests;
     public String campaigner_of;
     public String otp;
@@ -16,6 +17,7 @@ public class GBM extends User{
         super(roll_no, name, email);
         this.is_campaigner = false;
         this.is_activated = false;
+        this.applied_for_candidature=false;
         campaign_requests = new ArrayList<String>();
         campaigner_of = null;
     }

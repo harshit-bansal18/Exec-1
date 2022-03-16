@@ -2,6 +2,8 @@ package com.exec;
 
 import java.util.*;
 
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpSession;
 
 public class Utils {
@@ -33,5 +35,11 @@ public class Utils {
             otp += random.nextInt(10);
         }
         return otp;
+    }
+
+    public static <T> List<T> removeDuplicates(List<T> list){
+        
+        List<T> newList = list.stream().distinct().collect(Collectors.toList());
+        return newList;
     }
 }
