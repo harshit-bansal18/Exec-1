@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,11 +39,11 @@ public class CandidateController {
 
     // Then you have to activate the candidate account. Such an account must have at least one proposer and once seconder
     //TODO: add the httpsession access level to admin when the class is made
-    @PostMapping("/add")
-    public ResponseEntity<Object> addCandidate(@RequestBody Map<String, String> body) {
+    @PostMapping("/fileNomination")
+    public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body) {
         try{
             Candidate new_candidate = new Candidate(body.get("roll_no"), body.get("name"), body.get("email"), body.get("post"));
-            candidateservice.addCandidate(new_candidate);
+            candidateservice.fileNomination(new_candidate);
             return ResponseEntity.status(HttpStatus.CREATED).build(); 
         }
         catch(Exception E){
@@ -114,29 +115,29 @@ public class CandidateController {
         }
     }
 
-    //TODO: take a look at the real working of the EC ki seconders/proposers add kab hote hain
-    @PostMapping("/addSeconder")
-    public ResponseEntity<Object> add_Seconder(@RequestBody Map<String,String> body){
-        try {
-            candidateservice.addSeconder(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        catch(Exception E){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
+    // //TODO: take a look at the real working of the EC ki seconders/proposers add kab hote hain
+    // @PostMapping("/addSeconder")
+    // public ResponseEntity<Object> add_Seconder(@RequestBody Map<String,String> body){
+    //     try {
+    //         candidateservice.addSeconder(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+    //         return ResponseEntity.status(HttpStatus.OK).build();
+    //     }
+    //     catch(Exception E){
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    //     }
+    // }
 
-    //TODO: same as in that of the seconder
-    @PostMapping("/addProposer")
-    public ResponseEntity<Object> add_Proposer(@RequestBody Map<String,String> body){
-        try {
-            candidateservice.addProposer(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-        catch(Exception E){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
+    // //TODO: same as in that of the seconder
+    // @PostMapping("/addProposer")
+    // public ResponseEntity<Object> add_Proposer(@RequestBody Map<String,String> body){
+    //     try {
+    //         candidateservice.addProposer(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
+    //         return ResponseEntity.status(HttpStatus.OK).build();
+    //     }
+    //     catch(Exception E){
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    //     }
+    // }
      @PostMapping("/requestCampaigner")
     public ResponseEntity<Object> request_Campaigner(@RequestBody Map<String,String> body, HttpSession session){
         try {
@@ -249,6 +250,61 @@ public class CandidateController {
             session.removeAttribute("roll_no");
             session.removeAttribute("access_level");
             return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/addform")
+    public ResponseEntity<Object> add_form_link(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "Candidate not logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            response.put("pk",Integer.toString(candidateservice.add_form(roll_no, body.get("form_link"))));
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/removeform")
+    public ResponseEntity<Object> remove_form_link(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "Candidate not logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            candidateservice.remove_form(roll_no, body.get("form_link"));
+    
+           return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/viewmyforms")
+    public ResponseEntity<Object> view_my_forms(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "Candidate not logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            List <String> forms = candidateservice.view_forms(roll_no); 
+            for (Integer i = 0; i < forms.size(); ++i){
+                response.put("form" + i.toString(), forms.get(i));
+            }
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

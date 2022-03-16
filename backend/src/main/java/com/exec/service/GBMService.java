@@ -1,7 +1,7 @@
 package com.exec.service;
-
 import com.exec.repository.GBMRepository;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -9,6 +9,7 @@ import java.util.*;
 import com.exec.model.Candidate;
 import com.exec.model.GBM;
 
+@Lazy
 @Service
 public class GBMService {
     
@@ -65,6 +66,7 @@ public class GBMService {
             candidate_details.put("name", candidate.name);
             candidate_details.put("roll_no", candidate.roll_no);
             candidate_details.put("email", candidate.email);
+            candidate_details.put("post", candidate.post);
             candidates.add(candidate_details);
         }
 
@@ -105,5 +107,22 @@ public class GBMService {
         gbm.otp = otp;
         gbmRepository.save(gbm);
     }
+    public List<String> get_form_link(String roll_no){
+        Candidate candidate = candidateService.getCandidateByRoll(roll_no);
+        List<String> forms = new ArrayList<String>();
+        for (Map.Entry<String,Integer> entry : candidate.form_link.entrySet()){
+            forms.add(entry.getKey());
+        }
+        return forms;
+    }
 
+    public String get_name(String roll_no){
+        Candidate candidate = candidateService.getCandidateByRoll(roll_no);
+        return candidate.name;
+    }
+
+    public String get_post(String roll_no){
+        Candidate candidate = candidateService.getCandidateByRoll(roll_no);
+        return candidate.post;
+    }
 }
