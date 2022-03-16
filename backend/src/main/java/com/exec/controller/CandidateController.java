@@ -310,4 +310,45 @@ public class CandidateController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @PostMapping("/addVideos")
+    public ResponseEntity<Object> add_video(@RequestBody List<String> body, HttpSession session){
+        try {
+            Map<String, String> response = new HashMap<String, String>();
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "No candidate logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            for (String i : body) {
+                candidateservice.add_video(roll_no, i);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/addPosters")
+    public ResponseEntity<Object> add_poster(@RequestBody List<String> body, HttpSession session){
+        try {
+            Map<String, String> response = new HashMap<String, String>();
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")){
+                response.put("message", "No candidate logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            for (String i : body) {
+                candidateservice.add_poster(roll_no, i);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+            
 }
