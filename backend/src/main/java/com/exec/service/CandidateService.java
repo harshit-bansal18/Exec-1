@@ -2,8 +2,6 @@ package com.exec.service;
 
 import java.util.ArrayList;
 
-import javax.management.RuntimeErrorException;
-
 import com.exec.model.Candidate;
 import com.exec.model.GBM;
 import com.exec.model.Admin;
@@ -141,6 +139,43 @@ public class CandidateService {
         if(candidate.is_activated == true){
             Set<String> key_set = candidate.form_link.keySet();
             return new ArrayList<String>(key_set);
+        }
+        else{
+            throw new RuntimeException();
+        }
+    }
+
+    public List< Map<String, String> > getAllCandidatesBasicInfo(){
+        List<Candidate> allCandidates = candidateRepository.findAll();
+        List< Map<String, String> > BasicInfo = new ArrayList< Map<String, String> >();
+        
+        for(Candidate candidate: allCandidates){
+            Map<String, String> candidateInfo = new HashMap<String, String>();
+            candidateInfo.put("name", candidate.name);
+            candidateInfo.put("post", candidate.post);
+            candidateInfo.put("email", candidate.email);
+
+            BasicInfo.add(candidateInfo);
+        }
+        return BasicInfo;
+    }
+
+    public void add_video(String roll_no, String link){
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true){
+            candidate.video_links.add(link);
+            candidateRepository.save(candidate);
+        }
+        else{
+            throw new RuntimeException();
+        }
+    }
+
+    public void add_poster(String roll_no, String link){
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true){
+            candidate.poster_links.add(link);
+            candidateRepository.save(candidate);
         }
         else{
             throw new RuntimeException();
