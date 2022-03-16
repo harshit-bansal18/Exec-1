@@ -33,11 +33,11 @@ public class CandidateController {
         this.candidateservice = candidateservice;
         this.gbmservice = gbmservice;
     }
-    // First you signup with your roll , name and email. 
+    // First you signup with your roll, name and email. 
     // If an object does not already exist in the candidate database yet, it will be created
     // after the necessary checks. Otherwise rejected.
 
-    // Then you have to activate the candidate account. Such an account must have at least one proposer and once seconder
+    // Then you have to activate the candidate account. Such an account must have at least one proposer and two seconders
     //TODO: add the httpsession access level to admin when the class is made
     @PostMapping("/fileNomination")
     public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body) {

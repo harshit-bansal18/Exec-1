@@ -2,6 +2,8 @@ package com.exec;
 
 import java.util.*;
 
+import com.exec.model.Penalty;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.SimpleMailMessage;
@@ -22,20 +24,22 @@ public class EmailServiceImpl extends EmailSettings {
                 + "Please enter the following otp to complete the sign up process\n"
                 + "OTP: %s\n\n"
                 + "Thank you,\n"
-                + "Exec Team");
+                + "ExeC Team");
         template_emails.put( "Campign Request", "Hey %s,\n\n"
                 + "You have been requested to be a campaigner for %s\n"
-                + "Please log into your Exec account to accept or reject the request\n\n"
+                + "Please log into your ExeC account to accept or reject the request\n\n"
                 + "Thank you,\n"
-                + "Exec Team");
+                + "ExeC Team");
         template_emails.put("Campaigner Acceptance", "Hey %s,\n\n"
                 + "%s has accepted your campaigning request\n"
                 + "Please log into your account to view the changes\n\n"
                 + "Thank you,\n"
-                + "Exec Team");
-        template_emails.put("Campaigner Rejection", "Hey %s,\n\n"
-                + "%s has rejected your campaigning request\n"
-                + "Please log into your account to view the changes\n\n"
+                + "ExeC Team");
+        template_emails.put("Penalty Imposition", "Hey %s,\n\n"
+                + "A penalty of Rs. %s and Level %s has been imposed on you on the account of violation of\n"
+                + " %s of the Code of Conduct.\n"
+                + "Remark- %s.\n"
+                + "Penalty Id: %s\n\n"
                 + "Thank you,\n"
                 + "Exec Team");
         template_emails.put("Candidature Acceptance","Hey %s,\n\n"
@@ -82,10 +86,10 @@ public class EmailServiceImpl extends EmailSettings {
         String subject = template_subjects.get("Campaigner Acceptance");
         sendSimpleMessage(to, subject, text);
     }
-    
-    public void sendCampaignerRejectionMessage(String to, String campaigner, String campaignee) {
-        String text = String.format(template_emails.get("Campaigner Rejection"), campaignee, campaigner);
-        String subject = template_subjects.get("Campaigner Rejection");
+
+    public void sendPenaltyImpositionMessage(String to, Penalty pen) {
+        String text = String.format(template_emails.get("Penalty Imposition"), pen.name, pen.fine, pen.level, pen.part, pen.remark, pen.id);
+        String subject = template_subjects.get("Penalty Imposition");
         sendSimpleMessage(to, subject, text);
     }
 
