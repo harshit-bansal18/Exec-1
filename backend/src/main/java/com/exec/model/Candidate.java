@@ -11,6 +11,7 @@ public class Candidate extends User{
     public List<String> Seconders;
     public List<String> Proposers;
     public String post;
+    public Map<String,Integer> form_link;
     // ! More variables to be inserted 
     
     public boolean is_activated;
@@ -22,6 +23,7 @@ public class Candidate extends User{
         this.Campaigners = new ArrayList<String>();
         this.Seconders = new ArrayList<String>();
         this.Proposers = new ArrayList<String>();
+        this.form_link = new HashMap<String, Integer>();
         this.post = post;
     }
 
