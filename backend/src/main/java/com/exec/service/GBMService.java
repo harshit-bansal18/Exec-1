@@ -9,13 +9,14 @@ import java.util.*;
 import com.exec.model.Candidate;
 import com.exec.model.GBM;
 
+
 @Lazy
 @Service
 public class GBMService {
     
     private final GBMRepository gbmRepository;
     private final CandidateService candidateService;
-
+    
     public GBMService(GBMRepository gbmRepository, CandidateService candidateService) {
         this.gbmRepository = gbmRepository;
         this.candidateService = candidateService;
@@ -125,4 +126,5 @@ public class GBMService {
         Candidate candidate = candidateService.getCandidateByRoll(roll_no);
         return candidate.post;
     }
+   
 }

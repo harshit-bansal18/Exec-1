@@ -59,6 +59,7 @@ public class EmailServiceImpl extends EmailSettings {
         template_subjects.put( "Campaigner Rejection", "Exec - Campaigner Rejection");
         template_subjects.put( "Candidature Acceptance", "Exec - Candidature Acceptance");
         template_subjects.put( "Candidature Rejection", "Exec - Candidature Rejection");
+        template_subjects.put( "Penalty Imposition", "Exec - Penalty Imposed");
     }
 
     public void sendSimpleMessage(String to, String subject, String text) {

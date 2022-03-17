@@ -181,7 +181,28 @@ public class GBMController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+    @GetMapping("/viewcandidateforms")
+    public ResponseEntity<Object> viewForms(@RequestBody Map<String, String> body, HttpSession session){
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            Map<String,String> response = new HashMap<>();
 
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "No GBM user logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            List<String> forms = gbmservice.get_form_link(body.get("roll_no"));
+            for (Integer i = 0; i < forms.size(); ++i){
+                response.put("form" + i.toString(), forms.get(i));
+            }
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
     @PostMapping("/acceptCampaignRequest")
     public ResponseEntity<Object> acceptCampaignRequest(@RequestBody Map<String, String> body, HttpSession session) {
 

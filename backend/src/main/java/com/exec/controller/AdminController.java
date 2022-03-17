@@ -194,6 +194,59 @@ public class AdminController {
         } 
     }
     
+    @PostMapping("/addannouncement")
+    public ResponseEntity<Object> addAnnouncement(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Admin")){
+                response.put("message", "Invalid add announcement request");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            response.put("pk",Integer.toString(adminService.add_announcement(body.get("announcement"))));
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
+    @PostMapping("/removeannouncement")
+    public ResponseEntity<Object> remove_form_link(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Admin")){
+                response.put("message", "Invalid remove announcement request");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            adminService.remove_announcement(body.get("announcement"));
+    
+           return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/viewmyannouncements")
+    public ResponseEntity<Object> view_my_forms(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Admin")){
+                response.put("message", "Invalid view request");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            List <String> announcements = adminService.view_announcements(); 
+            for (Integer i = 0; i < announcements.size(); ++i){
+                response.put("announcement" + i.toString(), announcements.get(i));
+            }
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
 }
