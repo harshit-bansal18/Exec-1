@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
+//TODO:Add keys to key repository while signup
+
 @RequestMapping("/api/GBM")
 @RestController
 public class GBMController {
