@@ -3,7 +3,7 @@ package com.exec.controller;
 // import java.util.Map;
 import com.exec.service.CandidateService;
 import com.exec.service.GBMService;
-
+import com.exec.service.AdminService;
 // import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators.Integral;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,19 +12,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 // import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import com.exec.model.*;
 @RestController
 public class PublicController {
     
     private final CandidateService candidateservice;
+    private final AdminService adminservice;
     // private final GBMService gbmservice;
 
-    public PublicController(CandidateService candidateservice, GBMService gbmservice) {
+    public PublicController(CandidateService candidateservice, AdminService adminservice) {
         this.candidateservice = candidateservice;
         // this.gbmservice = gbmservice;
+        this.adminservice = adminservice;
     }
 
     @GetMapping("/viewCandidates")
@@ -74,6 +75,19 @@ public class PublicController {
         }
         return  new ResponseEntity<Object>(candidateInfo, HttpStatus.OK);
     }
-
+    @GetMapping("/viewAnnouncements")
+    public ResponseEntity<Object> viewAnnouncements(){
+        Map<String, String> response = new HashMap<String, String>();
+        try{
+        List<String> announcements = adminservice.view_announcements();
+        for (Integer i = 0; i < announcements.size(); ++i){
+                response.put("announcement" + i.toString(), announcements.get(i));
+            }
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch (Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
 }
