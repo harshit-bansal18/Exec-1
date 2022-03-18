@@ -3,7 +3,7 @@ var CryptoJS = require("crypto-js");
 
 
 // async function loadKeys() {
-//     const response = await fetch('/api/keys/public');
+//     const response = await fetch('/api/report/keys/public');
     
 
 //     const keys = await response.json();
@@ -12,7 +12,7 @@ var CryptoJS = require("crypto-js");
 
 
 // async function postReport(data) {
-//     const response = await fetch('/api/keys/public');
+//     const response = await fetch('/api/report/keys/public');
     
 
 //     const keys = await response.json();
@@ -32,7 +32,7 @@ var CryptoJS = require("crypto-js");
 //   async function getPriv() {
 //     let pass = prompt("Please enter your password", "Password");
 //     let roll= prompt("Please enter your roll number", "Roll Number");
-//     const response = await fetch('/api/keys/priv/?roll='+ roll);
+//     const response = await fetch('/api/report/keys/priv/?roll='+ roll);
 //     const keys = await response.json();
 //     var bytes  = CryptoJS.AES.decrypt(keys[priv], pass+keys['salt']);
 //     var decryptedPriv = bytes.toString(CryptoJS.enc.Utf8);
@@ -59,11 +59,11 @@ var publicKeyList=[lrs.gen().publicKey, lrs.gen().publicKey, lrs.gen().publicKey
 // var secretKey='{"publicKey":"'+tempSecret['publicKey']+'","privateKey":"'+tempSecret['priv']+'"}';
 // secretKey= JSON.parse(secretKey);
 // var publicKeyList=loadKeys();
-var message='';
+var message='11';
 
 var signed = lrs.sign(publicKeyList, secretKey, message);
 
 var data = '{"message":"'+message+'","signed":"'+signed+'"}';
 data= JSON.parse(data);
 // postReport(data);
-console.log(signed, lrs.verify(publicKeyList, signed, message));
+console.log(publicKeyList,message,signed, lrs.verify(publicKeyList, signed, message));
