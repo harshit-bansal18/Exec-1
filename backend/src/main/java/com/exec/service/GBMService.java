@@ -108,6 +108,13 @@ public class GBMService {
         gbm.otp = otp;
         gbmRepository.save(gbm);
     }
+
+    public void removeOtp(String roll_no) {
+        GBM gbm = getGBMByRoll(roll_no);
+        gbm.otp = null;
+        gbmRepository.save(gbm);
+    }
+    
     public List<String> get_form_link(String roll_no){
         Candidate candidate = candidateService.getCandidateByRoll(roll_no);
         List<String> forms = new ArrayList<String>();

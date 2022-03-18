@@ -40,13 +40,27 @@ public class AdminController {
     @PostMapping("/addAdmin")
     public ResponseEntity<Object> addAdmin(@RequestBody Map<String,String> body) {
         
-        PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-        String encoded_password=passwordEncoder.encode(body.get("password"));
-        Admin admin=new Admin(body.get("roll_no"),body.get("name"),body.get("email"));
-        admin.password=encoded_password;
-        adminRepository.insert(admin);
-    
-        return ResponseEntity.status(HttpStatus.OK).build();
+        Map<String, String> response = new HashMap<String, String>();
+        try{
+            PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+            String encoded_password=passwordEncoder.encode(body.get("password"));
+            Admin admin;
+            try{
+                admin=new Admin("0",body.get("name"),body.get("email"));
+                admin.password=encoded_password;
+                adminRepository.insert(admin);
+            }
+            catch(Exception E)
+            {
+                response.put("message","Admin account already exists");
+                return new ResponseEntity<Object>(response,HttpStatus.BAD_REQUEST);
+            }
+        
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
     }
 
@@ -58,14 +72,20 @@ public class AdminController {
         try{
 
             String roll_no = utils.isLoggedIn(session);
-            if(roll_no=="0")
+            if(roll_no != null)
             {
                 response.put("message", "Already logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
             
-    
-            Admin admin = adminRepository.findAll().get(0);
+            Admin admin;
+            try {
+                admin = adminRepository.findAll().get(0);
+            } 
+            catch (Exception e) {
+                response.put("message", "Admin account not found");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
 
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if(! passwordEncoder.matches(body.get("password"), admin.password)){
@@ -91,7 +111,7 @@ public class AdminController {
             String roll_no = utils.isLoggedIn(session);
             if( roll_no==null || !session.getAttribute("access_level").equals("Admin"))
             {
-                response.put("message", "Candidate not logged in");
+                response.put("message", "Admin not logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 

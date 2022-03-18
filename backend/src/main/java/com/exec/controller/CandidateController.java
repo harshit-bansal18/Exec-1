@@ -39,17 +39,6 @@ public class CandidateController {
 
     // Then you have to activate the candidate account. Such an account must have at least one proposer and two seconders
     //TODO: add the httpsession access level to admin when the class is made
-    @PostMapping("/fileNomination")
-    public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body) {
-        try{
-            Candidate new_candidate = new Candidate(body.get("roll_no"), body.get("name"), body.get("email"), body.get("post"));
-            candidateservice.fileNomination(new_candidate);
-            return ResponseEntity.status(HttpStatus.CREATED).build(); 
-        }
-        catch(Exception E){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@RequestBody Map<String, String> body, HttpSession session) {
@@ -57,6 +46,12 @@ public class CandidateController {
         {
             Candidate candidate;
             Map<String, String> response = new HashMap<String, String>();
+
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no != null){
+                response.put("message", "You are already logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
 
             try{
                 candidate = candidateservice.getCandidateByRoll(body.get("roll_no"));
@@ -195,6 +190,7 @@ public class CandidateController {
             
             String password = passwordEncoder.encode(body.get("password"));
             candidateservice.activateCandidate(body.get("roll_no"), password);
+            gbmservice.removeOtp(roll_no);
             session.removeAttribute("unverified_roll_no");
             session.removeAttribute("unverified_access_level");
             return ResponseEntity.status(HttpStatus.OK).build();

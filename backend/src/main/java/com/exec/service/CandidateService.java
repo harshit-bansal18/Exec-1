@@ -55,6 +55,12 @@ public class CandidateService {
         candidateRepository.save(candidate);
     }
 
+    public void removeOtp(String roll_no) {
+        Candidate candidate = getCandidateByRoll(roll_no);
+        candidate.otp = null;
+        candidateRepository.save(candidate);
+    }
+
     public void addCampaigner(String roll_no_candidate, String roll_no_gbm){
         
         Candidate candidate = getCandidateByRoll(roll_no_candidate);

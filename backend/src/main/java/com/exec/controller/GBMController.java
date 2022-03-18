@@ -2,7 +2,11 @@ package com.exec.controller;
 
 import com.exec.EmailServiceImpl;
 import com.exec.Utils;
+import com.exec.model.AspiringCandidate;
+import com.exec.model.Candidate;
 import com.exec.model.GBM;
+import com.exec.service.AspiringCandidateService;
+import com.exec.service.CandidateService;
 import com.exec.service.GBMService;
 import java.util.*;
 
@@ -26,17 +30,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class GBMController {
     
     private final GBMService gbmservice;
+    private final CandidateService candidateservice;
+    private final AspiringCandidateService aspiringcandidateservice;
     private Utils utils = new Utils();
     private EmailServiceImpl emailSender= new EmailServiceImpl();
 
-    public GBMController(GBMService gbmservice) {
+    public GBMController(GBMService gbmservice, CandidateService candidateservice, AspiringCandidateService aspiringcandidateservice) {
         this.gbmservice = gbmservice;
+        this.candidateservice = candidateservice;
+        this.aspiringcandidateservice = aspiringcandidateservice;
     }
 
     //TODO: add the httpsession access level to admin when the class is made
     @PostMapping("/add")
-    public ResponseEntity<Object> addGBM(@RequestBody Map<String, String> body) {
+    public ResponseEntity<Object> addGBM(@RequestBody Map<String, String> body, HttpSession session) {
+
+        Map<String, String> response = new HashMap<String, String>();
         try{
+            String roll_no = utils.isLoggedIn(session);
+
+            if(roll_no == null || !session.getAttribute("access_level").equals("Admin")){
+                response.put("message", "You are not authorized to perform this action");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
             GBM new_gbm = new GBM(body.get("roll_no"), body.get("name"), body.get("email"));
             gbmservice.addGBM(new_gbm);
             return ResponseEntity.status(HttpStatus.CREATED).build(); 
@@ -52,6 +69,12 @@ public class GBMController {
         {
             GBM gbm;
             Map<String, String> response = new HashMap<String, String>();
+
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no != null){
+                response.put("message", "You are already logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
 
             try{
                 gbm = gbmservice.getGBMByRoll(body.get("roll_no"));
@@ -103,6 +126,7 @@ public class GBMController {
             
             String password = passwordEncoder.encode(body.get("password"));
             gbmservice.activateGBM(roll_no, password);
+            gbmservice.removeOtp(roll_no);
             session.removeAttribute("unverified_roll_no");
             session.removeAttribute("unverified_access_level");
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -229,6 +253,30 @@ public class GBMController {
             }
             emailSender.sendCampaignerAcceptanceMessage(body.get("email_candidate"), body.get("name_candidate"), gbm.name);
             return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    //TODO: think about the removal of the reject campaign request function as a whole instead of just removing the notification feature
+
+    //TODO: currently this function is bullshit
+    @PostMapping("/fileNomination")
+    public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body, HttpSession session) {
+        
+        Map<String, String> response = new HashMap<>();
+
+        try{
+            String roll_no = body.get("roll_no");
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "No GBM user logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            
+            // aspiringcandidateservice.applyCandidature(roll_no, new List<String>, new List<String>, body.get("manifesto"));
+            return ResponseEntity.status(HttpStatus.CREATED).build(); 
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
