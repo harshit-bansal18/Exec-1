@@ -133,5 +133,11 @@ public class GBMService {
         Candidate candidate = candidateService.getCandidateByRoll(roll_no);
         return candidate.post;
     }
+
+    public void set_applied_for_candidature(String roll_no){
+        GBM gbm = getGBMByRoll(roll_no);
+        gbm.applied_for_candidature = true;
+        gbmRepository.save(gbm);
+    }
    
 }

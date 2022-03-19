@@ -6,8 +6,9 @@ import com.exec.Utils;
 
 import com.exec.repository.AdminRepository;
 import com.exec.model.Admin;
-
+import com.exec.model.AspiringCandidate;
 import com.exec.service.AdminService;
+import com.exec.service.AspiringCandidateService;
 
 import javax.servlet.http.HttpSession;
 
@@ -27,12 +28,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AspiringCandidateService aspiringCandidateService;
     private final AdminRepository  adminRepository;
     private Utils utils=new Utils();
 
-    public AdminController(AdminService adminService,AdminRepository adminRepository){
+    public AdminController(AdminService adminService,AdminRepository adminRepository, AspiringCandidateService aspiringCandidateService) {
         this.adminService=adminService;
         this.adminRepository=adminRepository;
+        this.aspiringCandidateService = aspiringCandidateService;
     }
 
 
@@ -214,7 +217,7 @@ public class AdminController {
         } 
     }
     
-    @PostMapping("/addannouncement")
+    @PostMapping("/addAnnouncement")
     public ResponseEntity<Object> addAnnouncement(@RequestBody Map<String, String> body, HttpSession session){
         Map<String,String> response = new HashMap<>();
         try{
@@ -231,7 +234,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/removeannouncement")
+    @PostMapping("/removeAnnouncement")
     public ResponseEntity<Object> remove_form_link(@RequestBody Map<String, String> body, HttpSession session){
         Map<String,String> response = new HashMap<>();
         try{
@@ -249,7 +252,7 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/viewmyannouncements")
+    @GetMapping("/viewMyAnnouncements")
     public ResponseEntity<Object> view_my_forms(@RequestBody Map<String, String> body, HttpSession session){
         Map<String,String> response = new HashMap<>();
         try{
@@ -263,6 +266,49 @@ public class AdminController {
                 response.put("announcement" + i.toString(), announcements.get(i));
             }
             return new ResponseEntity<Object>(response, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/viewAllNominations")
+    public ResponseEntity<Object> view_all_nominations(HttpSession session){
+
+        Map<String, String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Admin")){
+                response.put("message", "No Admin login found");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            List<AspiringCandidate> nominations = aspiringCandidateService.viewAllAspiringCandidates();
+            return new ResponseEntity<Object>(nominations, HttpStatus.OK);
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/rejectNomination")
+    public ResponseEntity<Object> reject_nomination(@RequestBody Map<String, String> body, HttpSession session){
+        Map<String,String> response = new HashMap<>();
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Admin")){
+                response.put("message", "No Admin login found");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            try{
+                aspiringCandidateService.deleteCandidature(body.get("roll_no"));
+            }
+            catch(Exception E)
+            {
+                response.put("message", "No such nomination found");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

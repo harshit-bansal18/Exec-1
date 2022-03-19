@@ -27,16 +27,32 @@ public class AspiringCandidateService{
         aspiringCandidateRepository.insert(aspiringcandidate);
     }
 
-     public void applyCandidature(String roll_no_gbm, List<String> Seconders, List<String> Proposers, String manifesto){
+     public void applyCandidature(String roll_no_gbm, List<String> Seconders, List<String> Proposers, String manifesto, String post){
         GBM gbm = gbmService.getGBMByRoll(roll_no_gbm);
 
         Seconders = Utils.removeDuplicates(Seconders);
         Proposers = Utils.removeDuplicates(Proposers);
         
-        if(gbm.applied_for_candidature || Seconders.size() < 2 || Proposers.size() < 1 || manifesto == null){
+        for(String roll_no : Seconders){
+            if(!gbm.is_campaigner){
+                gbmService.setIsCampaigner(roll_no);
+            }else{
+                throw new RuntimeException();
+            }
+        }
+
+        for(String roll_no : Proposers){
+            if(!gbm.is_campaigner){
+                gbmService.setIsCampaigner(roll_no);
+            }else{
+                throw new RuntimeException();
+            }
+        }
+
+        if(gbm.applied_for_candidature || Seconders.size() < 2 || Proposers.size() < 1 || manifesto == null || post == null){
             throw new RuntimeException();
         }else{
-            AspiringCandidate aspiringcandidate = new AspiringCandidate(gbm.roll_no, gbm.name, gbm.email, Seconders, Proposers, manifesto);
+            AspiringCandidate aspiringcandidate = new AspiringCandidate(gbm.roll_no, gbm.name, gbm.email, Seconders, Proposers, manifesto, post);
             addAspiringCandidate(aspiringcandidate);
         }
     }

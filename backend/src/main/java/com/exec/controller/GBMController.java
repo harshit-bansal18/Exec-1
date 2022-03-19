@@ -2,11 +2,8 @@ package com.exec.controller;
 
 import com.exec.EmailServiceImpl;
 import com.exec.Utils;
-import com.exec.model.AspiringCandidate;
-import com.exec.model.Candidate;
 import com.exec.model.GBM;
 import com.exec.service.AspiringCandidateService;
-import com.exec.service.CandidateService;
 import com.exec.service.GBMService;
 import java.util.*;
 
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,14 +28,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class GBMController {
     
     private final GBMService gbmservice;
-    private final CandidateService candidateservice;
     private final AspiringCandidateService aspiringcandidateservice;
     private Utils utils = new Utils();
     private EmailServiceImpl emailSender= new EmailServiceImpl();
 
-    public GBMController(GBMService gbmservice, CandidateService candidateservice, AspiringCandidateService aspiringcandidateservice) {
+    public GBMController(GBMService gbmservice, AspiringCandidateService aspiringcandidateservice) {
         this.gbmservice = gbmservice;
-        this.candidateservice = candidateservice;
         this.aspiringcandidateservice = aspiringcandidateservice;
     }
 
@@ -236,7 +232,7 @@ public class GBMController {
         try{
             String roll_no = utils.isLoggedIn(session);
             Map<String,String> response = new HashMap<>();
-
+ 
             if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
             {
                 response.put("message", "No GBM user logged in");
@@ -261,9 +257,8 @@ public class GBMController {
 
     //TODO: think about the removal of the reject campaign request function as a whole instead of just removing the notification feature
 
-    //TODO: currently this function is bullshit
     @PostMapping("/fileNomination")
-    public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body, HttpSession session) {
+    public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body, @RequestParam("Proposers") List<String> Proposers, @RequestParam("Seconders") List<String> Seconders, HttpSession session) {
         
         Map<String, String> response = new HashMap<>();
 
@@ -274,8 +269,33 @@ public class GBMController {
                 response.put("message", "No GBM user logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
+
+            GBM gbm = gbmservice.getGBMByRoll(roll_no);
+
+            if(gbm.applied_for_candidature){
+                response.put("message", "Already applied for candidature");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+
+            if(Proposers.size() < 1){
+                response.put("message", "No proposers");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
             
-            // aspiringcandidateservice.applyCandidature(roll_no, new List<String>, new List<String>, body.get("manifesto"));
+            if(Seconders.size() < 2){
+                response.put("message", "Atleast two seconders required");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+
+            try{
+                aspiringcandidateservice.applyCandidature(roll_no, Proposers, Seconders, body.get("manifesto"), body.get("post"));
+            }
+            catch(Exception E){
+                response.put("message", "Proposer / Seconder not found");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+            
+            gbmservice.set_applied_for_candidature(roll_no);
             return ResponseEntity.status(HttpStatus.CREATED).build(); 
         }
         catch(Exception E){
