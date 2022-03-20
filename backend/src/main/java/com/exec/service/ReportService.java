@@ -41,6 +41,10 @@ public class ReportService {
 
     }
 
+    public List<Report> getAllReports() {
+        return reportRepository.findAll();
+    }
+
 }
 
 
