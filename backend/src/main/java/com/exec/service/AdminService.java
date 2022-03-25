@@ -1,14 +1,16 @@
 package com.exec.service;
 
-import com.exec.EmailServiceImpl;
-
+import java.io.*;
+import java.net.*;
 import java.util.*;
 
 import com.exec.model.Admin;
 import com.exec.model.Candidate;
+import com.exec.model.GBM;
 import com.exec.repository.AdminRepository;
-import com.exec.repository.CandidateRepository;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +20,11 @@ import org.springframework.stereotype.Service;
 public class AdminService {
     
     private final AdminRepository adminRepository;
-    private final CandidateRepository candidateRepository;
-    private EmailServiceImpl emailSender= new EmailServiceImpl();
+    private final GBMService gbmService;
 
-    public AdminService(AdminRepository adminRepository,CandidateRepository candidateRepository){
-        this.adminRepository=adminRepository;
-        this.candidateRepository=candidateRepository;
+    public AdminService(AdminRepository adminRepository, GBMService gbmService) {
+        this.adminRepository = adminRepository;
+        this.gbmService = gbmService;
     }
 
     public List<Map<String, String>> viewCandidateRequests(){
@@ -43,23 +44,6 @@ public class AdminService {
         }
 
         return candidates;
-    }
-    
-    public void addCandidate(String roll_no){
-        candidateRepository.insert(getCandidatebyRoll(roll_no));
-        Admin admin=adminRepository.findAll().get(0);
-        //an email for acceptance will be sent here
-        emailSender.sendCandidatureAcceptanceMessage(getCandidatebyRoll(roll_no).email, getCandidatebyRoll(roll_no).name);
-        admin.CandidateRequests.remove(roll_no);
-        adminRepository.save(admin);
-        
-    }
-
-    public void rejectCandidate(String roll_no,String description){
-        Admin admin=adminRepository.findAll().get(0);
-        emailSender.sendCandidatureRejectionMessage(getCandidatebyRoll(roll_no).email, getCandidatebyRoll(roll_no).name, description);   
-        admin.CandidateRequests.remove(roll_no);
-        adminRepository.save(admin);
     }
 
     public Candidate getCandidatebyRoll(String roll_no){
@@ -104,5 +88,60 @@ public class AdminService {
         Set<String> key_set = admin.Announcements.keySet();
         return new ArrayList<String>(key_set);
       
+    }
+
+    public void populate() {
+	
+	    HttpURLConnection conn = null;
+		BufferedReader reader;
+		String line;
+		StringBuilder responseContent = new StringBuilder();
+		try{
+			URL url = new URL("https://search.pclub.in/api/students");
+			conn = (HttpURLConnection) url.openConnection();
+			
+			conn.setRequestMethod("GET");
+			int status = conn.getResponseCode();
+			
+			if (status >= 300) {
+				reader = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+				while ((line = reader.readLine()) != null) {
+					responseContent.append(line);
+				}
+				reader.close();
+			}
+			else {
+				reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				while ((line = reader.readLine()) != null) {
+					responseContent.append(line);
+				}
+				reader.close();
+			}
+            JSONArray students = new JSONArray(responseContent.toString());
+                for (int i = 0 ; i < students.length(); i++) {
+                    JSONObject student = students.getJSONObject(i);			
+                    String roll_no = student.getString("i").trim();
+                    String name = student.getString("n").trim();
+                    String email = student.getString("u").trim()+"@iitk.ac.in";
+                    GBM gbm = new GBM(roll_no,name,email);
+                    try{
+                        gbmService.addGBM(gbm);
+                    }
+                    catch(Exception e){
+                        System.out.println(e);
+                        System.out.println(roll_no);
+                        continue;
+                    }
+
+                }
+		}
+		catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			conn.disconnect();
+		}
+			
     }
 }

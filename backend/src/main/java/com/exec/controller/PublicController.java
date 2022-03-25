@@ -41,6 +41,7 @@ public class PublicController {
         candidateInfo.put("post", candidate.post);
         candidateInfo.put("email", candidate.email);
         candidateInfo.put("manifesto", candidate.manifesto_link);
+        candidateInfo.put("poster", candidate.poster_link);
 
         Integer listSize = candidate.Proposers.size();
         candidateInfo.put("num_proposers", Integer.toString(listSize));
@@ -48,8 +49,6 @@ public class PublicController {
         candidateInfo.put("num_seconders", Integer.toString(listSize));
         listSize = candidate.video_links.size();
         candidateInfo.put("num_video_links", Integer.toString(listSize));
-        listSize = candidate.poster_links.size();
-        candidateInfo.put("num_poster_links", Integer.toString(listSize));
 
         String temp;
         // * Adding all the proposers, seconders, links 
@@ -68,10 +67,6 @@ public class PublicController {
             candidateInfo.put(temp + Integer.toString(i+1), candidate.video_links.get(i));
         }
         
-        temp = "posterlink";
-        for (int i = 0; i < candidate.poster_links.size(); i++) {
-            candidateInfo.put(temp + Integer.toString(i+1), candidate.poster_links.get(i));
-        }
         return  new ResponseEntity<Object>(candidateInfo, HttpStatus.OK);
     }
     @GetMapping("/viewAnnouncements")

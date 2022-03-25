@@ -29,6 +29,10 @@ public class CandidateService {
         this.adminRepository=adminRepository;
     }
 
+    public void addCandidate(Candidate candidate){
+        candidateRepository.insert(candidate);
+    }
+
     public void fileNomination(Candidate candidate){
         //candidateRepository.insert(candidate);
         Admin admin;
@@ -153,7 +157,7 @@ public class CandidateService {
     public void add_poster(String roll_no, String link){
         Candidate candidate = getCandidateByRoll(roll_no);
         if(candidate.is_activated == true){
-            candidate.poster_links.add(link);
+            candidate.poster_link = link;
             candidateRepository.save(candidate);
         }
         else{
