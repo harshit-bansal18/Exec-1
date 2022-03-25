@@ -6,7 +6,7 @@ import MainDashboard from "components/Dashboard/MainDashboard";
 var gbm_routes = [
   {
     path: "/gbm/dashboard",
-    name: "Admin Dashboard",
+    name: "GBM Dashboard",
     icon: "ni ni-single-02 text-yellow",
     component: MainDashboard,
     layout: "/ouradmin",

@@ -1,10 +1,10 @@
 import React from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // core components
-import GBMDashboardNavbar from "components/Navbars/GBMDashboardNavbar.js";
-import GBMDashboardSidebar from "components/Sidebar/GBMDashboardSidebar.js";
-import gbm_routes from "gbm_routes.js";
-function GBMDashboardLayout (props){
+import CandidateDashboardNavbar from "components/Navbars/CandidateDashboardNavbar.js";
+import CandidateDashboardSidebar from "components/Sidebar/CandidateDashboardSidebar.js";
+import candidate_routes from "candidate_routes.js";
+function CandidateDashboard (props){
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -14,8 +14,8 @@ function GBMDashboardLayout (props){
     mainContent.current.scrollTop = 0;
   }, [location]);
 
-  const getRoutes = (gbm_routes) => {
-    return gbm_routes.map((prop, key) => {
+  const getRoutes = (candidate_routes) => {
+    return candidate_routes.map((prop, key) => {
       if (prop.layout === "/ouradmin") {
         return (
           <Route
@@ -32,11 +32,11 @@ function GBMDashboardLayout (props){
 
   return (
     <>
-      <GBMDashboardSidebar/>
+      <CandidateDashboardSidebar/>
       <div className="main-content" ref={mainContent}>
-        <GBMDashboardNavbar/>
+        <CandidateDashboardNavbar/>
         <Switch>
-          {getRoutes(gbm_routes)}
+          {getRoutes(candidate_routes)}
           <Redirect from="*" to="/pagenotfound" />
         </Switch>
       </div>
@@ -44,4 +44,4 @@ function GBMDashboardLayout (props){
   );
 }
 
-export default GBMDashboardLayout;
+export default CandidateDashboard;

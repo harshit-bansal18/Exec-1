@@ -21,10 +21,10 @@ import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 import { Container, Row, Col } from "reactstrap";
 
 // core components
-import routes from "routes.js";
+import candidate_routes from "candidate_routes.js";
 import CandidateLoginNavbar from "components/Navbars/CandidateLoginNavbar";
 
-function CandidateLoginLayout  (props) {
+function CandidateLayout  (props) {
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -40,8 +40,8 @@ function CandidateLoginLayout  (props) {
     mainContent.current.scrollTop = 0;
   }, [location]);
 
-  const getRoutes = (routes) => {
-    return routes.map((prop, key) => {
+  const getRoutes = (candidate_routes) => {
+    return candidate_routes.map((prop, key) => {
       if (prop.layout === "/auth") {
         return (
           <Route
@@ -81,7 +81,7 @@ function CandidateLoginLayout  (props) {
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
             <Switch>
-              {getRoutes(routes)}
+              {getRoutes(candidate_routes)}
               <Redirect from="*" to="/pagenotfound" />
             </Switch>
           </Row>
@@ -91,4 +91,4 @@ function CandidateLoginLayout  (props) {
   );
 };
 
-export default CandidateLoginLayout;
+export default CandidateLayout;

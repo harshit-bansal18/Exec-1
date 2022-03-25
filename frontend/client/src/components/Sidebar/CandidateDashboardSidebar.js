@@ -25,16 +25,11 @@ import { PropTypes } from "prop-types";
 // reactstrap components
 import {
   Collapse,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
   Form,
   Input,
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Media,
   NavbarBrand,
   Navbar,
   NavItem,
@@ -47,7 +42,7 @@ import {
 
 var ps;
 
-function AdminSidebar (props){
+function CandidateDashboardSidebar (props){
   const [collapseOpen, setCollapseOpen] = useState();
   // toggles collapse between opened and closed (true/false)
   const toggleCollapse = () => {
@@ -143,7 +138,7 @@ function AdminSidebar (props){
           {/* Navigation */}
           <Nav className="mb-md-3" navbar>
              <NavItem>
-              <NavLink href="/gbm/dashboard">
+              <NavLink href="/candidate/dashboard">
                 <i className="ni ni-ui-04" />
                 Candidates List
               </NavLink>
@@ -155,15 +150,33 @@ function AdminSidebar (props){
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/gbm/profile">
+              <NavLink href="/candidate/profile">
                 <i className="ni ni-spaceship" />
                 My Profile
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/gbm/campaign-request">
+              <NavLink href="/candidate/request-campaigner">
                 <i className="ni ni-spaceship" />
-                    Campaign Request
+                    Request Campaigner
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/candidate/add-videos">
+                <i className="ni ni-spaceship" />
+                    Add Videos
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/candidate/add-posters">
+                <i className="ni ni-spaceship" />
+                    Add Posters
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/candidate/manage-forms">
+                <i className="ni ni-spaceship" />
+                    Manage Forms
               </NavLink>
             </NavItem>
           </Nav>
@@ -179,12 +192,6 @@ function AdminSidebar (props){
               <NavLink href="https://docs.google.com/spreadsheets/d/1QU7nV--zUGeRN2wCylVCN2QPFx7hv6xsos7wNzlabD4/edit?usp=sharing" target="_blank">
                 <i className="ni ni-ui-04" />
                 Penalty Sheet
-              </NavLink>
-            </NavItem>
-             <NavItem>
-              <NavLink href="https://docs.google.com/forms/d/e/1FAIpQLSeD1w4ll6mLyJZNaKN6v0OKNA-lR3ZkdIv0dCgbt915N50Xuw/viewform?usp=sf_link">
-                <i className="ni ni-ui-04" />
-                    Apply for Nomination
               </NavLink>
             </NavItem>
           </Nav>
@@ -205,11 +212,11 @@ function AdminSidebar (props){
   );
 };
 
-AdminSidebar.defaultProps = {
+CandidateDashboardSidebar.defaultProps = {
   routes: [{}],
 };
 
-AdminSidebar.propTypes = {
+CandidateDashboardSidebar.propTypes = {
   // links that will be displayed inside the component
   routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
@@ -226,4 +233,4 @@ AdminSidebar.propTypes = {
   }),
 }
 
-export default AdminSidebar;
+export default CandidateDashboardSidebar;

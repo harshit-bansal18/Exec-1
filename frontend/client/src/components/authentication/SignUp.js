@@ -24,13 +24,13 @@ export default function SignUp(props) {
 
     async function registerAccount(values){
 
-        let email=document.getElementById('email').value;
+        let roll_no=document.getElementById('roll_no').value;
         let password=document.getElementById('password').value;
         let confirmPassword=document.getElementById('confirmPassword').value; 
         let firstName=document.getElementById('firstName').value;  
         let lastName=document.getElementById('lastName').value; 
 
-        if(email==='' || password==='' ||confirmPassword ==='' ||firstName==='' ||lastName===''){
+        if(roll_no==='' || password==='' ||confirmPassword ==='' ||firstName==='' ||lastName===''){
             setError('');
             setError('Please fill all the details required');
             return;
@@ -42,14 +42,7 @@ export default function SignUp(props) {
             return;
         }
 
-        // await signup(email,password,firstName,lastName);
-
-        // if((errorMessage!=='')||(errorCode!=='')){
-        //     setError(errorMessage);
-        //     return;
-        // }
-        
-        history.push('/gbm/login');
+      history.push('/gbm/login');
 
     }
 
@@ -127,8 +120,8 @@ export default function SignUp(props) {
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <input type="email" className="form-control form-control-user" id="email"
-                                        placeholder="Email Address" />
+                                    <input type="roll_no" className="form-control form-control-user" id="roll_no"
+                                        placeholder="Roll no" />
                                 </div>
                                 <div className="form-group row">
                                     <div className="col-sm-6 mb-3 mb-sm-0">
