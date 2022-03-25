@@ -2,11 +2,13 @@ package com.exec.model;
 
 import java.util.*;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("AspiringCandidate")
 public class AspiringCandidate{
     
+    @Id
     public String roll_no;
     public String name;
     public String email;
