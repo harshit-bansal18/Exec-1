@@ -20,7 +20,7 @@ export default function SignIn(props) {
     const history=useHistory();
 
     async function loginUser(){
-        let email=document.getElementById('email').value;
+        let roll_no=document.getElementById('roll_no').value;
         let password=document.getElementById('password').value;
 
     }
@@ -91,9 +91,9 @@ export default function SignIn(props) {
                                     </div>
                                     <form class="user">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="email" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address..." />
+                                            <input type="roll_no" class="form-control form-control-user"
+                                                id="roll_no" aria-describedby="emailHelp"
+                                                placeholder="Enter Roll No...." />
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"

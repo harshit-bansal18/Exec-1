@@ -20,16 +20,7 @@ export default function ForgetPassword(props) {
     const[success,setSuccess]=useState('');
 
     function resetPassword(){
-        let email=document.getElementById('email').value;
-
-        // auth.sendPasswordResetEmail(email).then(()=>{
-        //     setError('');
-        //     setSuccess("Instructions has been sent to your registered email");
-        // })
-        // .catch((error)=>{
-        //     setSuccess('');
-        //     setError(error.message);
-        // });
+        let roll_no=document.getElementById('roll_no').value;
     }
     return (
         <div style={{backgroundColor:"lightblue",right:0,bottom:0,left:0,top:0,position:"fixed"}}>
@@ -94,16 +85,16 @@ export default function ForgetPassword(props) {
                                 <div class="p-5">
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
-                                        <p class="mb-4">We get it, stuff happens. Just enter your email address below
+                                        <p class="mb-4">We get it, stuff happens. Just enter your Roll Number below
                                             and we'll send you a link to reset your password!</p>
                                     </div>
                                     {error && <Alert variant="danger">{error}</Alert>}
                                     {success && <Alert variant="success">{success}</Alert>}
                                     <form class="user">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="email" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address..." />
+                                            <input type="roll_no" class="form-control form-control-user"
+                                                id="roll_no" aria-describedby="emailHelp"
+                                                placeholder="Enter roll No..." />
                                         </div>
                                         <Link to="/gbm/forget" class="btn btn-primary btn-user btn-block" onClick={()=>resetPassword()}>
                                             Reset Password
