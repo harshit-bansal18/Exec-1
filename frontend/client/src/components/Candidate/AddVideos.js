@@ -34,9 +34,9 @@ function AddVideos(props) {
         isOpen={notificationModal.visible}
         toggle={() => toggleModal(notificationModal)}
       >
-        <div className="modal-header">
-          <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
+       
+        <Card className="bg-gradient-info shadow border-0">
+          <CardHeader className="bg-transparent pb-5" tag="h3">
             <div className=" text-center mt-2 mb-3">
               <h1>Add Video Link</h1>
           </div>
@@ -58,20 +58,19 @@ function AddVideos(props) {
                 </InputGroup>
               </FormGroup>
             <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button className="my-4" color="default" type="button">
                   Add Link
                 </Button>
             </div>
             <div className="text-center">
-                <Button className="my-4" color="primary" type="button" onClick={() => toggleModal(false)}>
+                <Button className="my-4" color="default" type="button" onClick={() => toggleModal(false)}>
                   Close
                 </Button>
             </div>
                     </Form>
-          </CardBody>
-        </Card>
-          
-        </div>
+        </CardBody>
+    </Card>
+              
       </Modal>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
         <Container fluid>

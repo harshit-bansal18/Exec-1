@@ -29,7 +29,7 @@ import {
   Col,
 } from "reactstrap";
 
-const CandidateLoginNavbar = () => {
+const AdminLoginNavbar = () => {
   return (
     <>
       <Navbar className="navbar-top navbar-horizontal navbar-dark" expand="md">
@@ -66,13 +66,13 @@ const CandidateLoginNavbar = () => {
               <NavItem>
                 <NavLink className="nav-link-icon" to="/gbm/login" tag={Link}>
                   <i className="ni ni-planet" />
-                  <span className="nav-link-inner--text">GBM_Login</span>
+                    <span className="nav-link-inner--text">GBM_Login</span>
                 </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink className="nav-link-icon" to="/admin/login" tag={Link}>
+                <NavLink className="nav-link-icon" to="/candidate/login" tag={Link}>
                   <i className="ni ni-planet" />
-                  <span className="nav-link-inner--text">Admin_Login</span>
+                    <span className="nav-link-inner--text">Candidate_Login</span>
                 </NavLink>
               </NavItem>
               <NavItem>
@@ -89,4 +89,4 @@ const CandidateLoginNavbar = () => {
   );
 };
 
-export default CandidateLoginNavbar;
+export default AdminLoginNavbar;

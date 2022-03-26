@@ -13,9 +13,10 @@ import {
   Col,
 } from "reactstrap";
 
-import { Link } from "react-router-dom";
+import { Link,useHistory } from "react-router-dom";
 
-const CandidateSignUp = () => {
+const OTPVerification = () => {
+    const history = useHistory();
   return (
     <>
       <Col lg="6" md="8">
@@ -34,16 +35,6 @@ const CandidateSignUp = () => {
                 <InputGroup className="input-group-alternative mb-3">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
-                      <i className="ni ni-hat-3" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Name" type="text" />
-                </InputGroup>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative mb-3">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
                       <i className="ni ni-email-83" />
                     </InputGroupText>
                   </InputGroupAddon>
@@ -53,29 +44,14 @@ const CandidateSignUp = () => {
                   />
                 </InputGroup>
               </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Password"
-                    type="password"
-                    autoComplete="new-password"
-                  />
-                </InputGroup>
-              </FormGroup>
-              <div className="text-center">
-                <Button className="mt-4" color="primary" type="button">
-                  Create account
-                </Button>
-              </div>
                           
-            <div className="text-center">
+                          <div className="text-center">
+                              <Button className="mt-4" color="primary" type="button" onClick={() => {history.push('/candidate/otp-verification')}}>
+                                    Create account
+                              </Button>
+                              <br/><br/>
                               Already have a account? <Link to="/candidate/login" class="small" >Login</Link>
-                              <br/>
+                              <br/><br/>
                               <Link to="/candidate/forget" class="small" >Forget Password</Link>
             </div>
                           
@@ -87,4 +63,4 @@ const CandidateSignUp = () => {
   );
 };
 
-export default CandidateSignUp;
+export default OTPVerification;

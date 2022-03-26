@@ -3,12 +3,15 @@ import {BrowserRouter as Switch,Route, Redirect,BrowserRouter} from "react-route
 import SignUp from './components/authentication/SignUp';
 import SignIn from './components/authentication/SignIn';
 import ForgetPassword from './components/authentication/ForgetPassword';
+import OTPVerification from 'components/authentication/OTPVerification';
 import MainDashboardLayout from "layouts/MainDashboard.js";
 import CandidateDashboard from 'components/Dashboard/CandidateDashboard';
 import GBMLayout from "layouts/GBMLayout.js";
 import CandidateLayout from "layouts/CandidateLayout";
 import PageNotFound from 'views/examples/404Page';
 import ReportingPortal from 'components/Dashboard/ReportingPortal';
+import AdminLayout from 'layouts/AdminLayout.js';
+import AdminDashboard from 'components/Dashboard/AdminDashboard';
 
 export default function RoutingComponent(props) {
   
@@ -23,10 +26,13 @@ export default function RoutingComponent(props) {
         <Route exact path="/">
             <Redirect to="/candidates" />
         </Route>
-        
+
         {/* general routes */}
-        <Route exact path="/candidates" render={(props) => <MainDashboardLayout {...props} />} />
+        
+        <Route exact path="/candidates/" render={(props) => <MainDashboardLayout {...props} />} />
+        <Route exact path="/info" render={(props) => <MainDashboardLayout {...props} />} />      
         <Route exact path="/reporting" render={(props) => <ReportingPortal {...props} />} />
+                
 
         {/* candidate routes         */}
         <Route exact path="/candidate/login" render={(props) => <CandidateLayout {...props} />} />
@@ -37,6 +43,10 @@ export default function RoutingComponent(props) {
         <Route exact path="/candidate/profile" render={(props) => <CandidateDashboard {...props} />} />
         <Route exact path="/candidate/add-videos" render={(props) => <CandidateDashboard {...props} />} />
         <Route exact path="/candidate/add-posters" render={(props) => <CandidateDashboard {...props} />} />
+        <Route exact path="/candidate/otp-verification" render={(props) => <CandidateLayout {...props} />} />
+                
+        
+                {/* <Route exact path="/candidates/:id" render={(props) => <ReportingPortal {...props} />} /> */}
         
         {/* gbm routes */}
         <Route exact path="/gbm/dashboard" render={(props) => <GBMLayout {...props} />} />
@@ -45,6 +55,13 @@ export default function RoutingComponent(props) {
         <Route exact path="/gbm/login" children={<SignIn/>} />
         <Route exact path="/gbm/signup" children={<SignUp />}/>
         <Route exact path="/gbm/forget" children={<ForgetPassword />} />
+        <Route exact path="/gbm/otp-verification" children={<OTPVerification />} />
+                
+
+        {/* admin routes */}
+        <Route exact path="/admin/login" render={(props)=><AdminLayout {...props}/>} />
+        <Route exact path="/admin/dashboard" render={(props) => <AdminDashboard {...props} />} />
+        <Route exact path="/admin/view-nominations" render={(props)=><AdminDashboard {...props}/>} />
         <Route exact path="/pagenotfound" children={<PageNotFound />} />
     </Switch>
   </BrowserRouter>

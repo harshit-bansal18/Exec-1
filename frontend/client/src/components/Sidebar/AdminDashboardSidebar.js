@@ -25,16 +25,11 @@ import { PropTypes } from "prop-types";
 // reactstrap components
 import {
   Collapse,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
   Form,
   Input,
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Media,
   NavbarBrand,
   Navbar,
   NavItem,
@@ -45,14 +40,9 @@ import {
   Col,
 } from "reactstrap";
 
-var ps;
 
-function DashboardSidebar (props){
+function AdminDashboardSidebar (props){
   const [collapseOpen, setCollapseOpen] = useState();
-  // verifies if routeName is the one active (in browser input)
-  const activeRoute = (routeName) => {
-    return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
-  };
   // toggles collapse between opened and closed (true/false)
   const toggleCollapse = () => {
     setCollapseOpen((data) => !data);
@@ -62,7 +52,9 @@ function DashboardSidebar (props){
     setCollapseOpen(false);
   };
   // creates the links that appear in the left menu / Sidebar
-  const { logo } = props;
+ 
+
+  const {logo } = props;
   let navbarBrandProps;
   if (logo && logo.innerLink) {
     navbarBrandProps = {
@@ -93,50 +85,9 @@ function DashboardSidebar (props){
         </button>
         {/* Brand */}
           <NavbarBrand className="pt-0" {...navbarBrandProps}>
-            <img
-              alt={logo.imgAlt}
-              className="navbar-brand-img"
-              src={
-                require("../../assets/img/icons/common/team.jpg").default
-              }
-            />
+            Exec
           </NavbarBrand>
-        {/* User */}
-        <Nav className="align-items-center d-md-none">
-          <UncontrolledDropdown nav>
-            <DropdownToggle nav>
-              <Media className="align-items-center">
-                <span className="avatar avatar-sm rounded-circle">
-                  <img
-                    alt="..."
-                    src={
-                      require("../../assets/img/theme/team-1-800x800.jpg")
-                        .default
-                    }
-                  />
-                </span>
-              </Media>
-            </DropdownToggle>
-            <DropdownMenu className="dropdown-menu-arrow" right>
-              <DropdownItem className="noti-title" header tag="div">
-                <h6 className="text-overflow m-0">Welcome!</h6>
-              </DropdownItem>
-              <DropdownItem to="/user-profile" tag={Link}>
-                <i className="ni ni-single-02" />
-                <span>My profile</span>
-              </DropdownItem>
-              <DropdownItem to="/user-profile" tag={Link} >
-                <i className="ni ni-support-16" />
-                <span>Support</span>
-              </DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem to="" tag={Link}>
-                <i className="ni ni-user-run" />
-                <span>Logout</span>
-              </DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </Nav>
+        
         {/* Collapse */}
         <Collapse navbar isOpen={collapseOpen}>
           {/* Collapse header */}
@@ -184,9 +135,9 @@ function DashboardSidebar (props){
             </InputGroup>
           </Form>
           {/* Navigation */}
-           <Nav className="mb-md-3" navbar>
+          <Nav className="mb-md-3" navbar>
              <NavItem>
-              <NavLink href="/candidates">
+              <NavLink href="/admin/dashboard">
                 <i className="ni ni-ui-04" />
                 Candidates List
               </NavLink>
@@ -195,6 +146,27 @@ function DashboardSidebar (props){
               <NavLink href="/reporting">
                 <i className="ni ni-spaceship" />
                 Reporting Portal
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/admin/view-nominations">
+                <i className="ni ni-spaceship" />
+                    View Nomination
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <hr className="my-3" />
+           <Nav className="mb-md-3" navbar>
+             <NavItem>
+              <NavLink href="https://drive.google.com/file/d/1jBJmmoRWsnAe1ONVzfypIaJNi-2MGSdg/view" target="_blank">
+                <i className="ni ni-ui-04" />
+                Code of Conduct
+              </NavLink>
+            </NavItem>
+             <NavItem>
+              <NavLink href="https://docs.google.com/spreadsheets/d/1QU7nV--zUGeRN2wCylVCN2QPFx7hv6xsos7wNzlabD4/edit?usp=sharing" target="_blank">
+                <i className="ni ni-ui-04" />
+                Penalty Sheet
               </NavLink>
             </NavItem>
           </Nav>
@@ -208,72 +180,18 @@ function DashboardSidebar (props){
           </Nav>
           {/* Divider */}
           <hr className="my-3" />
-          {/* Heading */}
-          {/* <h6 className="navbar-heading text-muted">Your Activities</h6> */}
-          {/* Navigation */}
-          <Nav className="mb-md-3" navbar>
-             <NavItem>
-              <NavLink href="https://drive.google.com/file/d/1jBJmmoRWsnAe1ONVzfypIaJNi-2MGSdg/view" target="_blank">
-                <i className="ni ni-ui-04" />
-                Code of Conduct
-              </NavLink>
-            </NavItem>
-             <NavItem>
-              <NavLink href="https://docs.google.com/spreadsheets/d/1QU7nV--zUGeRN2wCylVCN2QPFx7hv6xsos7wNzlabD4/edit?usp=sharing" target="_blank">
-                <i className="ni ni-ui-04" />
-                Penalty Sheet
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/gbm/login">
-                <i className="ni ni-spaceship" />
-                GBM Login
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/gbm/signup">
-                <i className="ni ni-palette" />
-                GBM Signup
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/candidate/login">
-                <i className="ni ni-ui-04" />
-                Candidate Login
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/candidate/signup">
-                <i className="ni ni-ui-04" />
-                Candidate SignUp
-              </NavLink>
-            </NavItem>
-            <NavItem>
-            <NavLink href="/admin/login">
-                <i className="ni ni-ui-04" />
-                Admin Login
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <Nav className="mb-md-3" navbar>
-            <NavItem className="active-pro active">
-              <NavLink href="">
-                <i className="ni ni-spaceship" />
-                Exec
-              </NavLink>
-            </NavItem>
-          </Nav>
+          
         </Collapse>
       </Container>
     </Navbar>
   );
 };
 
-DashboardSidebar.defaultProps = {
+AdminDashboardSidebar.defaultProps = {
   routes: [{}],
 };
 
-DashboardSidebar.propTypes = {
+AdminDashboardSidebar.propTypes = {
   // links that will be displayed inside the component
   routes: PropTypes.arrayOf(PropTypes.object),
   logo: PropTypes.shape({
@@ -290,4 +208,4 @@ DashboardSidebar.propTypes = {
   }),
 }
 
-export default DashboardSidebar;
+export default AdminDashboardSidebar;

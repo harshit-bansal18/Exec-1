@@ -68,7 +68,7 @@ function CandidateForgetPassword (props) {
                           
               <div className="text-center">
                               <Link to="/candidate/login" class="small" >Login</Link>
-                              <br/>
+                              <br/><br/>
                               <Link to="/candidate/signup" class="small" >Signup</Link>
             </div>
                           
