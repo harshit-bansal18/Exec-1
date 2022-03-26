@@ -16,7 +16,7 @@
 
 */
 import Index from "views/Index.js";
-
+import CandidateInfo from "layouts/CandidateInfo";
 var routes = [
   {
     path: "/candidates",
@@ -24,6 +24,13 @@ var routes = [
     icon: "ni ni-key-25 text-info",
     component: Index,
     layout: "/admin",
+  },
+  {
+      path: "/info",
+      name: "Candidate Info",
+      icon: "ni ni-single-02 text-yellow",
+      component: CandidateInfo,
+      layout: "/admin",
   },
 
 ];

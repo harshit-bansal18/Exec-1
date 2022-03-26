@@ -4,19 +4,25 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   CardImg,
   CardTitle,
-  CardText,
   Col,
   Row,
   Modal,
   Container,
+  FormGroup,
+  Form,
+  Input,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup,
   
 } from "reactstrap";
-import { Link } from 'react-router-dom';
+import { Link,useHistory } from 'react-router-dom';
 
 function MainDashboard(){
-
+  const history = useHistory();
   const [notificationModal,setNotificationModal]=useState({content:{},visible:false});
   const [events,setEvents]=useState([{name:"Candidate1",desc:"PRESIDENT, STUDENTS GYMKHANA"},
                                      {name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS"},
@@ -37,9 +43,9 @@ function MainDashboard(){
       setNotificationModal(info)
   };
 
-  function cardClick(){
-    alert("Card is clicked");
-  }
+  function cardClick() {
+    history.push('/info');
+}
 
   let contents;
 
@@ -65,7 +71,7 @@ function MainDashboard(){
                   top
                 ></CardImg>
                 <CardBody>
-              <a style={{ cursor: 'pointer' }} onClick={()=>cardClick()}>
+              <a style={{ cursor: 'pointer' }} onClick={()=>toggleModal(true,item)}>
               <Row>
                 <div className="col">
                   <CardTitle
@@ -88,7 +94,7 @@ function MainDashboard(){
               </Row>
               </a>
               <p className="mt-3 mb-0 text-muted text-sm">
-              <span className="text-Hex"><Link onClick={() => toggleModal(true,item)}><b><Button color="info">View Candidate Details</Button></b></Link></span>
+              <span className="text-Hex"><Link onClick={() => cardClick()}><b><Button color="info">View Candidate Details</Button></b></Link></span>
               </p>
             </CardBody>
               </Card>

@@ -30,13 +30,13 @@ function AddPoster(props) {
   };
   return (
       <>
-        <Modal
+          <Modal
+              className="modal-dialog-centered "
         isOpen={notificationModal.visible}
         toggle={() => toggleModal(notificationModal)}
       >
-        <div className="modal-header">
-          <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
+          <Card className="bg-gradient-info shadow border-0">
+          <CardHeader className="bg-transparent text-white pb-5">
             <div className=" text-center mt-2 mb-3">
               <h1>Add Poster Link</h1>
           </div>
@@ -56,22 +56,20 @@ function AddPoster(props) {
                     autoComplete="new-link"
                   />
                 </InputGroup>
-              </FormGroup>
+            </FormGroup>
             <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button className="my-4" color="default" type="button">
                   Add Link
                 </Button>
             </div>
             <div className="text-center">
-                <Button className="my-4" color="primary" type="button" onClick={() => toggleModal(false)}>
+                <Button className="my-4" color="default" type="button" onClick={() => toggleModal(false)}>
                   Close
                 </Button>
             </div>
                     </Form>
           </CardBody>
         </Card>
-          
-        </div>
       </Modal>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
         <Container fluid>
