@@ -7,6 +7,7 @@ import CandidateProfile from "components/Candidate/CandidateProfile.js";
 import RequestCampaigner from "components/Candidate/RequestCampaigner";
 import AddVideos from "components/Candidate/AddVideos";
 import AddPoster from "components/Candidate/AddPoster";
+import ManageForms from "components/Candidate/ManageForms.js";
 
 var candidate_routes = [
     {
@@ -70,6 +71,13 @@ var candidate_routes = [
         name: "Add Poster",
         icon: "ni ni-single-02 text-yellow",
         component: AddPoster,
+        layout: "/ouradmin",
+    },
+    {
+        path: "/candidate/manage-forms",
+        name: "Manage Forms",
+        icon: "ni ni-single-02 text-yellow",
+        component: ManageForms,
         layout: "/ouradmin",
     },
 
