@@ -14,7 +14,75 @@ import {
 } from "reactstrap";
 // core components
 
-function CampaignTables  (props) {
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+function CampaignTables(props) {
+  
+  const [requester,setRequester] = useState([{name:"Candidate1",desc:"PRESIDENT, STUDENTS GYMKHANA",roll_no:"12121"},
+                                     {name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",roll_no:"12122"},
+                                     {name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",roll_no:"12123"},
+                                     {name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",roll_no:"12124"},
+                                     {name:"Candidate5",desc:"GENERAL SECRETARY, MEDIA AND CULTURE",roll_no:"12125"},
+                                     { name: "Candidate6", desc: "GENERAL SECRETARY, UG ACADEMICS AND CAREER" ,roll_no:"12126"},]);
+  
+  
+  const history = useHistory();
+
+  const details = event => {
+    history.push('/info');
+    event.preventDefault();
+  }
+
+  const requesterList = requester.map((item) => {
+    return (
+            <tr>
+                    <th scope="row">
+                          <span className="mb-0 text-sm">
+                            {item.name}
+                          </span>
+                       
+                    </th>
+                      <td>{item.desc}</td>
+                    <td>
+                      <Badge color="" className="badge-dot mr-4">
+                        {item.roll_no}           
+                      </Badge>
+                    </td>
+                    <td>
+                     <button type="button" class="btn btn-success">Accept</button>
+                    </td>
+                    <td>
+                      <div className="d-flex align-items-center">
+                        <button type="button" class="btn btn-danger">Decline</button>
+                      </div>
+                    </td>
+                    <td className="text-right">
+                      <UncontrolledDropdown>
+                        <DropdownToggle
+                          className="btn-icon-only text-light"
+                          href="#pablo"
+                          role="button"
+                          size="sm"
+                          color=""
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <i className="fas fa-ellipsis-v" />
+                        </DropdownToggle>
+                        <DropdownMenu className="dropdown-menu-arrow" right>
+                          <DropdownItem
+                            href="#pablo"
+                            onClick={details}
+                          >
+                            View Complete Details
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
+                    </td>
+                  </tr>
+    );
+  });
+  
+  
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -41,57 +109,14 @@ function CampaignTables  (props) {
                   <tr>
                     <th scope="col">Candidate Name</th>
                     <th scope="col">Contesting for</th>
-                    <th scope="col">Email</th>
+                    <th scope="col">Roll Number</th>
                     <th scope="col">Accept</th>
                     <th scope="col">Reject</th>
                     <th scope="col" />
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">
-                          <span className="mb-0 text-sm">
-                            Candidate1
-                          </span>
-                       
-                    </th>
-                    <td>President</td>
-                    <td>
-                      <Badge color="" className="badge-dot mr-4">
-                            <a href="">abc@xyz.com</a>                
-                      </Badge>
-                    </td>
-                    <td>
-                     <button type="button" class="btn btn-success">Accept</button>
-                    </td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <button type="button" class="btn btn-danger">Decline</button>
-                      </div>
-                    </td>
-                    <td className="text-right">
-                      <UncontrolledDropdown>
-                        <DropdownToggle
-                          className="btn-icon-only text-light"
-                          href="#pablo"
-                          role="button"
-                          size="sm"
-                          color=""
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-ellipsis-v" />
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                          <DropdownItem
-                            href="#pablo"
-                            onClick={(e) => e.preventDefault()}
-                          >
-                            View Complete Details
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
-                    </td>
-                  </tr>
+                    {requesterList}
                 </tbody>
               </Table>
             </Card>

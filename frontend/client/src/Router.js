@@ -43,6 +43,7 @@ export default function RoutingComponent(props) {
         <Route exact path="/candidate/profile" render={(props) => <CandidateDashboard {...props} />} />
         <Route exact path="/candidate/add-videos" render={(props) => <CandidateDashboard {...props} />} />
         <Route exact path="/candidate/add-posters" render={(props) => <CandidateDashboard {...props} />} />
+        <Route exact path="/candidate/manage-forms" render={(props) => <CandidateDashboard {...props} />} />
         <Route exact path="/candidate/otp-verification" render={(props) => <CandidateLayout {...props} />} />
                 
         
