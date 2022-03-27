@@ -31,7 +31,7 @@ function MainDashboard(){
    ]);
   const style = {
     width: "22rem",
-    height: "25rem"
+    height: "32rem"
   };
 
   function toggleModal(value,item) {
@@ -66,7 +66,7 @@ function MainDashboard(){
               <Card style={style} className="card-stats mb-3 mb-xl-0">
                 <CardImg
                   alt="..."
-                  src={"https://demos.creative-tim.com/argon-design-system-pro/assets/img/faces/alejandro-escamilla.jpg"}
+                  src={item.image_link}
                   top
                 ></CardImg>
                 <CardBody>
