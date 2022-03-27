@@ -3,6 +3,7 @@ import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 import DashboardSidebar from "components/Sidebar/DashboardSidebar.js";
 import DashboardNavbar from "components/Navbars/DashboardNavbar";
 import routes from "routes.js";
+import CandidateInfo from "./CandidateInfo";
 
 function MainDashboardLayout (props){
   const mainContent = React.useRef(null);
@@ -55,6 +56,7 @@ function MainDashboardLayout (props){
         />
         <Switch>
           {getRoutes(routes)}
+          <Route exact path="/info/:id" render={(props) => <CandidateInfo {...props} />} /> 
           <Redirect from="*" to="/pagenotfound" />
         </Switch>
       </div>
