@@ -18,15 +18,14 @@ import { useHistory } from 'react-router-dom';
 
 function ViewNominations(props) {
   const history = useHistory();
-   const [nominee,setNominee]=useState([{name:"Candidate1",desc:"PRESIDENT, STUDENTS GYMKHANA",roll_no:"12121"},
-                                     {name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",roll_no:"12122"},
-                                     {name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",roll_no:"12123"},
-                                     {name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",roll_no:"12124"},
-                                     {name:"Candidate5",desc:"GENERAL SECRETARY, MEDIA AND CULTURE",roll_no:"12125"},
-                                     { name: "Candidate6", desc: "GENERAL SECRETARY, UG ACADEMICS AND CAREER" ,roll_no:"12126"},]);
+   const [nominee,setNominee]=useState([{ id: 1,roll_no:'200122', name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
+                                     {id:2,roll_no:'200122',name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
+                                     {id:3,roll_no:'200122',name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+                                     {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+  ]);
 
-  const viewDetails = event => {
-    history.push('/info');
+  const viewDetails = (event,id) => {
+    history.push('/info/'+id);
     event.preventDefault();
   };
 
@@ -75,7 +74,7 @@ function ViewNominations(props) {
             <DropdownMenu className="dropdown-menu-arrow" right>
               <DropdownItem
                 href="#pablo"
-                onClick={viewDetails}
+                onClick={(event) => viewDetails(event,data.id)}
               >
                 View Complete Details
               </DropdownItem>
