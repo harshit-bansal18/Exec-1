@@ -1,9 +1,9 @@
 import React from 'react';
 import {BrowserRouter as Switch,Route, Redirect,BrowserRouter} from "react-router-dom";
-import SignUp from './components/authentication/SignUp';
-import SignIn from './components/authentication/SignIn';
-import ForgetPassword from './components/authentication/ForgetPassword';
-import OTPVerification from 'components/authentication/OTPVerification';
+import SignUp from './components/gbm_authentication/SignUp';
+import SignIn from './components/gbm_authentication/SignIn';
+import ForgetPassword from './components/gbm_authentication/ForgetPassword';
+import OTPVerification from 'components/gbm_authentication/OTPVerification';
 import MainDashboardLayout from "layouts/MainDashboard.js";
 import CandidateDashboard from 'components/Dashboard/CandidateDashboard';
 import GBMLayout from "layouts/GBMLayout.js";
@@ -30,7 +30,7 @@ export default function RoutingComponent(props) {
         {/* general routes */}
         
         <Route exact path="/candidates/" render={(props) => <MainDashboardLayout {...props} />} />
-        <Route exact path="/info" render={(props) => <MainDashboardLayout {...props} />} />      
+        <Route exact path="/info/:id" render={(props) => <MainDashboardLayout {...props} />} />      
         <Route exact path="/reporting" render={(props) => <ReportingPortal {...props} />} />
                 
 

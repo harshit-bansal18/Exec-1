@@ -24,12 +24,11 @@ import { Link,useHistory } from 'react-router-dom';
 function MainDashboard(){
   const history = useHistory();
   const [notificationModal,setNotificationModal]=useState({content:{},visible:false});
-  const [events,setEvents]=useState([{name:"Candidate1",desc:"PRESIDENT, STUDENTS GYMKHANA"},
-                                     {name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS"},
-                                     {name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA"},
-                                     {name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY"},
-                                     {name:"Candidate5",desc:"GENERAL SECRETARY, MEDIA AND CULTURE"},
-                                     { name: "Candidate6", desc: "GENERAL SECRETARY, UG ACADEMICS AND CAREER" },]);
+  const [candidates, setCandidates] = useState([{ id: 1, name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
+                                     {id:2,name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
+                                     {id:3,name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+                                     {id:4,name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+   ]);
   const style = {
     width: "22rem",
     height: "25rem"
@@ -43,15 +42,15 @@ function MainDashboard(){
       setNotificationModal(info)
   };
 
-  function cardClick() {
-    history.push('/info');
+  function cardClick(id) {
+    history.push('/info/'+id);
 }
 
   let contents;
 
   function Split(){
 
-    let copy=events.slice();
+    let copy=candidates.slice();
 
     let arr=[],size=4;
 
@@ -94,7 +93,7 @@ function MainDashboard(){
               </Row>
               </a>
               <p className="mt-3 mb-0 text-muted text-sm">
-              <span className="text-Hex"><Link onClick={() => cardClick()}><b><Button color="info">View Candidate Details</Button></b></Link></span>
+              <span className="text-Hex"><Link onClick={() => cardClick(item.id)}><b><Button color="info">View Candidate Details</Button></b></Link></span>
               </p>
             </CardBody>
               </Card>

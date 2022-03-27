@@ -1,6 +1,6 @@
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
-const CandidateInfoHeader = () => {
+const CandidateInfoHeader = (props) => {
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -20,13 +20,13 @@ const CandidateInfoHeader = () => {
                           Candidate Name
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                           Render Name
+                          {props.candidate && props.candidate.name}
                         </span>
                       </div>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="h2 font-weight-bold mb-0">
-                           Add Post
+                          {props.candidate && props.candidate.desc}
                       </span>
                     </p>
                   </CardBody>
@@ -91,7 +91,7 @@ const CandidateInfoHeader = () => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> Link
+                        <a href = {props.candidate&& props.candidate.manifesto_link}>{props.candidate&& props.candidate.manifesto_link}</a> 
                       </span>{" "}
                     </p>
                   </CardBody>

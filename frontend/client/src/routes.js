@@ -25,13 +25,5 @@ var routes = [
     component: Index,
     layout: "/admin",
   },
-  {
-      path: "/info",
-      name: "Candidate Info",
-      icon: "ni ni-single-02 text-yellow",
-      component: CandidateInfo,
-      layout: "/admin",
-  },
-
 ];
 export default routes;

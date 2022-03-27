@@ -1,45 +1,44 @@
-/*!
 
-=========================================================
-* Argon Dashboard React - v1.2.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import { useState } from "react";
+import { useState,useEffect } from "react";
 // node.js library that concatenates classes (strings)
 
 // reactstrap components
 import {
-  Button,
   Card,
   CardHeader,
   CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
   Container,
   Row,
   Col,
   CardImg
 } from "reactstrap";
 
-
 import CandidateInfoHeader from "./CandidateInfoHeader";
 
 const CandidateInfo = (props) => {
   const [activeNav, setActiveNav] = useState(1);
+  
+  const [candidates, setCandidates] = useState([{ id: 1, name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
+                                     {id:2,name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
+                                     {id:3,name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+                                     {id:4,name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+  ]);
+
+  const [filteredCandidates,setFilteredCandidates] = useState({});
+  var selectedCandidates;
+  useEffect(() => {
+    const params = props.match.params;
+    //alert(params.id);
+    
+    selectedCandidates=candidates.filter(function (element) {
+      return element.id == params.id
+    }).map(function ({ id, name, desc, image_link, manifesto_link, poster_link }) {
+      console.log(name);
+      return { id, name, desc, image_link, manifesto_link, poster_link };
+    });
+    console.log(selectedCandidates);
+    setFilteredCandidates(selectedCandidates[0])
+  },[]);
 
   const toggleNavs = (e, index) => {
     e.preventDefault();
@@ -47,8 +46,8 @@ const CandidateInfo = (props) => {
   };
   return (
     <>
-      <CandidateInfoHeader />
-      {/* Page content */}
+      <CandidateInfoHeader candidate={filteredCandidates}/>
+     
       <Container className="mt--7" fluid>
         <Row>
           <Col className="mb-5 mb-xl-0" xl="8">
@@ -66,7 +65,7 @@ const CandidateInfo = (props) => {
                 <div className="chart">
                   <CardImg
                   alt="..."
-                  src={"https://eciitk.com/assets/img/Posters/Rohit.jpg"}
+                  src={filteredCandidates && filteredCandidates.poster_link}
                   top
                 ></CardImg>
                 </div>
@@ -79,7 +78,7 @@ const CandidateInfo = (props) => {
                 <div className="chart">
                   <CardImg
                   alt="..."
-                  src={"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg"}
+                  src={filteredCandidates && filteredCandidates.image_link}
                   top
                 ></CardImg>
                 </div>
@@ -88,7 +87,9 @@ const CandidateInfo = (props) => {
           </Col>
         </Row>
       </Container>
+     
     </>
+    
   );
 };
 
