@@ -72,6 +72,7 @@ public class AspiringCandidateService{
                 .orElseThrow(() -> new RuntimeException("No Aspiring Candidate found with roll_no: " + roll));
     }
 
+    //TODO: applied_for_candidature = False implement this
     public void deleteCandidature(String roll){
         AspiringCandidate aspiringCandidate = getAspiringCandidateByRoll(roll);
         aspiringCandidateRepository.delete(aspiringCandidate);

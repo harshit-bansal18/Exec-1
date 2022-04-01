@@ -2,9 +2,14 @@ package com.exec.controller;
 
 // import java.util.Map;
 import com.exec.service.CandidateService;
+import com.exec.service.PenaltyService;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.exec.service.AdminService;
 // import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators.Integral;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,16 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.exec.model.*;
 @RestController
 public class PublicController {
     
     private final CandidateService candidateservice;
     private final AdminService adminservice;
+    private final PenaltyService penaltyService;
     // private final GBMService gbmservice;
 
-    public PublicController(CandidateService candidateservice, AdminService adminservice) {
+    public PublicController(CandidateService candidateservice, AdminService adminservice, PenaltyService penaltyService) {
         this.candidateservice = candidateservice;
+        this.penaltyService = penaltyService;
         // this.gbmservice = gbmservice;
         this.adminservice = adminservice;
     }
@@ -81,6 +90,28 @@ public class PublicController {
         }
         catch (Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @GetMapping("/getPenaltyCsv")
+    public void viewPenalties(HttpServletResponse response){
+
+        try{
+            String filename = "Penalties.csv";
+
+            response.setContentType("text/csv");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, 
+                       "attachment; filename=\"" + filename + "\"");
+
+            StatefulBeanToCsv<Penalty> writer = new StatefulBeanToCsvBuilder<Penalty>(response.getWriter())
+                                                    .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER)
+                                                    .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                                                    .withOrderedResults(false).build();
+
+            writer.write(penaltyService.getAllPenalties());
+        }
+        catch (Exception E){
+            
         }
     }
 
