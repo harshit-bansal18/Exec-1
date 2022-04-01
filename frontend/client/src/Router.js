@@ -52,6 +52,7 @@ export default function RoutingComponent(props) {
         {/* gbm routes */}
         <Route exact path="/gbm/dashboard" render={(props) => <GBMLayout {...props} />} />
         <Route exact path="/gbm/profile" render={(props) => <GBMLayout {...props} />} />
+        <Route exact path="/gbm/nomination" render={(props) => <GBMLayout {...props} />} />
         <Route exact path="/gbm/campaign-request" render={(props) => <GBMLayout {...props} />} />
         <Route exact path="/gbm/login" children={<SignIn/>} />
         <Route exact path="/gbm/signup" children={<SignUp />}/>
