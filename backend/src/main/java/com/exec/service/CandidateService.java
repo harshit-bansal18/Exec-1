@@ -185,7 +185,7 @@ public class CandidateService {
         }
     }
 
-    public void remove_poster(String roll_no, String link) {
+    public void remove_poster(String roll_no) {
         Candidate candidate = getCandidateByRoll(roll_no);
         if(candidate.is_activated == true) {
             candidate.poster_link = null;
