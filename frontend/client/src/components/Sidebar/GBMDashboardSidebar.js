@@ -182,7 +182,7 @@ function AdminSidebar (props){
               </NavLink>
             </NavItem>
              <NavItem>
-              <NavLink href="https://docs.google.com/forms/d/e/1FAIpQLSeD1w4ll6mLyJZNaKN6v0OKNA-lR3ZkdIv0dCgbt915N50Xuw/viewform?usp=sf_link">
+              <NavLink href="/gbm/nomination">
                 <i className="ni ni-ui-04" />
                     Apply for Nomination
               </NavLink>
