@@ -118,7 +118,7 @@ function NominationApplicationForm  (props) {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Enter your Proposer name"
+                    placeholder="Enter your Proposer Roll No"
                     type="proposer"
                     autoComplete="new-proposer"
                   />
@@ -132,7 +132,7 @@ function NominationApplicationForm  (props) {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Enter your 1st Seconder Name"
+                    placeholder="Enter your 1st Seconder Roll No"
                     type="seconder1"
                     autoComplete="new-seconder"
                   />
@@ -146,7 +146,7 @@ function NominationApplicationForm  (props) {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Enter your 2nd Seconder Name"
+                    placeholder="Enter your 2nd Seconder Roll No"
                     type="seconder2"
                     autoComplete="new-seconder"
                   />
