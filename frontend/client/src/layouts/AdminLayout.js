@@ -7,6 +7,7 @@ import { Container, Row } from "reactstrap";
 import admin_routes from "admin_routes.js";
 import AdminLoginNavbar from "components/Navbars/AdminLoginNavbar";
 
+
 function AdminLayout  (props) {
   const mainContent = React.useRef(null);
   const location = useLocation();
@@ -65,6 +66,7 @@ function AdminLayout  (props) {
           <Row className="justify-content-center">
             <Switch>
               {getRoutes(admin_routes)}
+              
               <Redirect from="*" to="/pagenotfound" />
             </Switch>
           </Row>

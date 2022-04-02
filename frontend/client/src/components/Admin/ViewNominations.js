@@ -25,7 +25,7 @@ function ViewNominations(props) {
   ]);
 
   const viewDetails = (event,id) => {
-    history.push('/info/'+id);
+    history.push('/admin/info/'+id);
     event.preventDefault();
   };
 
