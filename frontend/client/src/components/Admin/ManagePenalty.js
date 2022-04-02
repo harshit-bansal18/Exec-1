@@ -123,7 +123,7 @@ function ManagePenalty(props) {
                   </InputGroupAddon>
                   <Input
                     placeholder="Add Clause"
-                                      type="clause"
+                                      type="text"
                                       name="clause"
                     autoComplete="new-clause"
                   />
@@ -138,7 +138,7 @@ function ManagePenalty(props) {
                   </InputGroupAddon>
                   <Input
                     placeholder="Add Level"
-                                      type="level"
+                                      type="number"
                                       name = "level"
                     autoComplete="new-level"
                   />
@@ -153,7 +153,7 @@ function ManagePenalty(props) {
                   </InputGroupAddon>
                   <Input
                     placeholder="Add Fine Amount"
-                                      type="fine"
+                                      type="numner"
                                       name = "fine"
                     autoComplete="new-fine"
                   />

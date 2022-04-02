@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // reactstrap components
 import { Container, Row , Button,
@@ -20,6 +21,9 @@ function NominationApplicationForm  (props) {
   const mainContent = React.useRef(null);
   const location = useLocation();
   const history = useHistory();
+  const [Proposercounter, setProposerCounter] = useState(1);
+  const [Secondercounter, setSeconderCounter] = useState(2);
+
   React.useEffect(() => {
     document.body.classList.add("bg-default");
     return () => {
@@ -31,6 +35,41 @@ function NominationApplicationForm  (props) {
     document.scrollingElement.scrollTop = 0;
     mainContent.current.scrollTop = 0;
   }, [location]);
+
+  const addProposer = (event) => {
+    setProposerCounter(Proposercounter + 1);
+  }
+
+  const deleteProposer = (event) => {
+    if(Proposercounter>1) setProposerCounter(Proposercounter - 1);
+  }
+
+  const addSeconder = (event) => {
+    setSeconderCounter(Secondercounter + 1);
+  }
+
+  const deleteSeconder = (event) => {
+    if(Secondercounter>2) setSeconderCounter(Secondercounter - 1);
+  }
+
+  const FileNomination = (event) => {
+   
+    let post_ = document.getElementById("post").value; 
+    const proposers = document.querySelectorAll('[name="proposer"]');
+    const proposers_ = [...proposers].map(input => input.value);
+    const seconders = document.querySelectorAll('[name="seconder"]');
+    const seconders_ = [...seconders].map(input => input.value);
+    const manifesto_link_ = document.getElementById("manifesto").value;
+
+    const nominationDetails = {
+      post: post_,
+      proposers: proposers_,
+      seconders: seconders_,
+      manifesto_link: manifesto_link_
+    }
+
+    //console.log(nominationDetails)
+  }
 
   return (
     <>
@@ -64,34 +103,6 @@ function NominationApplicationForm  (props) {
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
             <Form role="form">
-              <FormGroup className="mb-3">
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-email-83" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Enter your roll number"
-                    type="roll_no"
-                    autoComplete="roll_no"
-                  />
-                </InputGroup>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Enter your Name"
-                    type="name"
-                    autoComplete="new-name"
-                  />
-                </InputGroup>
-                    </FormGroup>
                     <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -99,9 +110,9 @@ function NominationApplicationForm  (props) {
                       <i className="ni ni-email-83" />
                     </InputGroupText>
                   </InputGroupAddon>
-                    <Input type="select" placeholder="Select your post">
+                        <Input type="select" placeholder="Select post to apply for" id="post">
 
-                          <option>Enter your post</option>
+                          <option disabled selected>Select post to apply for</option>
                           <option>President,Student Gymkhana</option>
                           <option>General Secretary,Science and Technology</option>
                           <option>Senator Y20</option>
@@ -109,49 +120,91 @@ function NominationApplicationForm  (props) {
                            <option>Senator Y18</option>
                     </Input>
                 </InputGroup>
-                </FormGroup>
-                    <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Enter your Proposer Roll No"
-                    type="proposer"
-                    autoComplete="new-proposer"
-                  />
+                    </FormGroup>
+                    {Array.from(Array(Proposercounter)).map((c, index) => {
+                        return (
+                          <FormGroup>
+                            <InputGroup className="input-group-alternative">
+                              <InputGroupAddon addonType="prepend">
+                                <InputGroupText>
+                                  <i className="ni ni-lock-circle-open" />
+                                </InputGroupText>
+                              </InputGroupAddon>
+                              <Input
+                                placeholder="Enter your Proposer Roll No"
+                                key={c}
+                                type="proposer"
+                                autoComplete="new-proposer"
+                                name = "proposer"
+                              />
+                            </InputGroup>
+                          </FormGroup>
+                        );
+                      })}
+                     <FormGroup>
+                      <InputGroup className="input-group-alternative">
+
+                   <Button className="btn-icon btn-2" block color="warning" width="100rem" onClick={(event)=>addProposer(event)}>
+                              <span className="btn-inner--icon">
+                                <i className="ni ni-bag-17"></i>
+                                </span>
+                                <span className="btn-inner--text">Add Proposers</span>
+                        </Button>
                 </InputGroup>
                     </FormGroup>
                     <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Enter your 1st Seconder Roll No"
-                    type="seconder1"
-                    autoComplete="new-seconder"
-                  />
+                      <InputGroup className="input-group-alternative">
+
+                   <Button className="btn-icon btn-2" block color="warning" width="100rem" onClick={(event)=>deleteProposer(event)}>
+                              <span className="btn-inner--icon">
+                                <i className="ni ni-bag-17"></i>
+                                </span>
+                                <span className="btn-inner--text">Delete Proposers</span>
+                        </Button>
                 </InputGroup>
                     </FormGroup>
-                       <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Enter your 2nd Seconder Roll No"
-                    type="seconder2"
-                    autoComplete="new-seconder"
-                  />
-                </InputGroup>
-              </FormGroup>
+                    {Array.from(Array(Secondercounter)).map((c, index) => {
+                        return (
+                          <FormGroup>
+                            <InputGroup className="input-group-alternative">
+                              <InputGroupAddon addonType="prepend">
+                                <InputGroupText>
+                                  <i className="ni ni-lock-circle-open" />
+                                </InputGroupText>
+                              </InputGroupAddon>
+                              <Input
+                                placeholder="Enter your Seconder Roll No"
+                                key={c}
+                                type="seconder"
+                                autoComplete="new-seconder"
+                                name = "seconder"
+                              />
+                            </InputGroup>
+                          </FormGroup>
+                        );
+                      })}
+                      <FormGroup>
+                      <InputGroup className="input-group-alternative">
+
+                        <Button className="btn-icon btn-2" block color="warning" width="100rem" onClick={(event) => addSeconder(event)}>
+                              <span className="btn-inner--icon">
+                                <i className="ni ni-bag-17"></i>
+                                </span>
+                                <span className="btn-inner--text">Add Seconders</span>
+                        </Button>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative">
+
+                        <Button className="btn-icon btn-2" block color="warning" width="100rem" onClick={(event) => deleteSeconder(event)}>
+                              <span className="btn-inner--icon">
+                                <i className="ni ni-bag-17"></i>
+                                </span>
+                                <span className="btn-inner--text">Delete Seconders</span>
+                        </Button>
+                      </InputGroup>
+                    </FormGroup>
               <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -162,12 +215,13 @@ function NominationApplicationForm  (props) {
                   <Input
                     placeholder="Enter your manifesto link"
                     type="manifesto"
-                    autoComplete="new-manifesto"
+                          autoComplete="new-manifesto"
+                          id = "manifesto"
                   />
                 </InputGroup>
               </FormGroup>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button" onClick={()=> {history.push('/gbm/dashboard')}}>
+                <Button className="my-4" color="primary" type="button" onClick={(event)=> FileNomination(event)}>
                   File Nomination
                 </Button>
               </div>
