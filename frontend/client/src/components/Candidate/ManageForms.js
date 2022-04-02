@@ -1,5 +1,5 @@
 // reactstrap components
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {
   Badge,
   Card,
@@ -19,14 +19,70 @@ import {
 } from "reactstrap";
 // core components
 
+import axios from 'axios';
 import { Link, } from 'react-router-dom';
 
 function ManageForms(props) {
     const [notificationModal, setNotificationModal] = useState({ visible: false });
-    const [forms, setForms] = useState([{ name: "Form1", link: "https://docs.google.com/forms/d/e/1FAIpQLSeD1w4ll6mLyJZNaKN6v0OKNA-lR3ZkdIv0dCgbt915N50Xuw/viewform?usp=sf_link" },
-                                        { name: "Form1", link: "https://docs.google.com/forms/d/e/1FAIpQLSeD1w4ll6mLyJZNaKN6v0OKNA-lR3ZkdIv0dCgbt915N50Xuw/viewform?usp=sf_link" },
-                                        { name: "Form1", link: "https://docs.google.com/forms/d/e/1FAIpQLSeD1w4ll6mLyJZNaKN6v0OKNA-lR3ZkdIv0dCgbt915N50Xuw/viewform?usp=sf_link" },     
-    ]);
+    const [forms, setForms] = useState([]);
+    const [changed, setChanged] = useState(true);
+    const base_url = "http://localhost:8080/";
+
+    useEffect(() => {
+      async function fetchData() {
+        if(changed == true){
+          axios.defaults.withCredentials = true;
+          await axios
+            .get(base_url + "api/candidate/viewmyforms")
+            .then((response) => {
+              setForms(response.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          setChanged(false);
+        }
+      }
+      fetchData();
+    }, [changed]); 
+
+    const add = async(event) => {
+      event.preventDefault();
+  
+      let link = document.getElementById("link").value;
+      axios.defaults.withCredentials = true;
+      await axios
+        .post(base_url + "api/candidate/addform", {
+          "form_link": link,
+        })
+        .then((response) => {
+          setChanged(true);
+          alert("Form added");
+          toggleModal(false);
+          // setShowModal(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+    const remove = async (event, link) => {
+      event.preventDefault();
+  
+      axios.defaults.withCredentials = true;
+      await axios
+        .post(base_url + "api/candidate/removeform", {
+          "form_link": link,
+        })
+        .then((response) => {
+          setChanged(true);
+          alert("Form deleted");
+          // setShowModal(false);
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    };
 
     const formList = forms.map((item) => {
         return (
@@ -41,7 +97,7 @@ function ManageForms(props) {
                      <a href={item.link}>Link</a>
                     </td>
                      <td>
-                     <button type="button" class="btn btn-danger">Delete Form</button>
+                     <button type="button" class="btn btn-danger" onClick={(e) => remove(e, item.link)}>Delete Form</button>
                     </td>                  
             </tr>
         );
@@ -77,11 +133,12 @@ function ManageForms(props) {
                     placeholder="link"
                     type="link"
                     autoComplete="new-link"
+                    id = "link"
                   />
                 </InputGroup>
             </FormGroup>
             <div className="text-center">
-                <Button className="my-4" color="default" type="button">
+                <Button className="my-4" color="default" type="button" onClick={(e) => add(e)}>
                   Add Link
                 </Button>
             </div>

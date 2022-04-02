@@ -80,7 +80,7 @@ public class GBMService {
 
         if(!gbm.is_campaigner || gbm.campaign_requests.contains(roll_no_candidate)){
             gbm.campaign_requests.clear();
-            setIsCampaigner(roll_no_gbm);
+            gbm.is_campaigner = true;
             gbm.campaigner_of = roll_no_candidate;
             gbmRepository.save(gbm);
             candidateService.addCampaigner(roll_no_candidate, roll_no_gbm);
@@ -117,11 +117,7 @@ public class GBMService {
     
     public List<String> get_form_link(String roll_no){
         Candidate candidate = candidateService.getCandidateByRoll(roll_no);
-        List<String> forms = new ArrayList<String>();
-        for (Map.Entry<String,Integer> entry : candidate.form_link.entrySet()){
-            forms.add(entry.getKey());
-        }
-        return forms;
+        return candidate.form_link;
     }
 
     public String get_name(String roll_no){

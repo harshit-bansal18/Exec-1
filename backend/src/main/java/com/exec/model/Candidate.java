@@ -11,7 +11,7 @@ public class Candidate extends User{
     public List<String> Seconders;
     public List<String> Proposers;
     public String post;
-    public Map<String,Integer> form_link;
+    public List<String> form_link;
     
     public String manifesto_link;
     public List<String> video_links;
@@ -29,7 +29,7 @@ public class Candidate extends User{
         this.video_links = new ArrayList<String>();
         this.poster_link = null;
         this.manifesto_link = manifesto_link;
-        this.form_link = new HashMap<String, Integer>();
+        this.form_link = new ArrayList<String>();
         this.post = post;
     }
 

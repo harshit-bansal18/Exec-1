@@ -20,7 +20,7 @@ public class EmailSettings {
         
         mailSender.setUsername("appexec4@gmail.com");
         //TODO: iska koi alternative nikalo
-        mailSender.setPassword("funur253");
+        mailSender.setPassword(email_pass);
         
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

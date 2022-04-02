@@ -15,6 +15,7 @@ import { Container, Row , Button,
     Col,Alert} from "reactstrap";
 
 import { Link, useHistory } from 'react-router-dom';
+import axios from "axios";
 
 
 function NominationApplicationForm  (props) {
@@ -23,7 +24,10 @@ function NominationApplicationForm  (props) {
   const history = useHistory();
   const [Proposercounter, setProposerCounter] = useState(1);
   const [Secondercounter, setSeconderCounter] = useState(2);
-  const [alert, setAlert] = useState('');
+  const [notif, setNotif] = useState('');
+  const base_url = "http://localhost:8080/";
+
+
   React.useEffect(() => {
     document.body.classList.add("bg-default");
     return () => {
@@ -52,7 +56,8 @@ function NominationApplicationForm  (props) {
     if(Secondercounter>2) setSeconderCounter(Secondercounter - 1);
   }
 
-  const FileNomination = (event) => {
+  const FileNomination = async(event) => {
+    event.preventDefault();
    
     let post_ = document.getElementById("post").value; 
     const proposers = document.querySelectorAll('[name="proposer"]');
@@ -61,18 +66,45 @@ function NominationApplicationForm  (props) {
     const seconders_ = [...seconders].map(input => input.value);
     const manifesto_link_ = document.getElementById("manifesto").value;
     if(post_===''||post_=="Select post to apply for" || proposers_==='' ||seconders_ ==='' ||manifesto_link_===''){
-            setAlert('');
-            setAlert('Please fill all the details required');
+            setNotif('');
+            setNotif('Please fill all the details required');
             return;
     }
-    const nominationDetails = {
-      post: post_,
-      proposers: proposers_,
-      seconders: seconders_,
-      manifesto_link: manifesto_link_
-    }
 
-    console.log(nominationDetails)
+    console.log(seconders_);
+    console.log(proposers_);
+    console.log(post_);
+    console.log(manifesto_link_);
+
+    axios.defaults.withCredentials = true;
+    await axios.post(base_url + "api/GBM/fileNomination", {
+      "Seconders": seconders_,
+      "Proposers": proposers_,
+      "manifesto_link": manifesto_link_,
+      "post": post_,
+    })
+    .then((response) => {
+      alert("Nomination Successful");
+      history.push("/gbm/dashboard");
+    })
+    .catch((error) => {
+      if(error.response != undefined){
+        if(error.response.data.message != undefined){
+          setNotif('');
+          setNotif(error.response.data.message);
+        }
+        else{
+          console.log(error.response);
+          setNotif('');
+          setNotif('Something went wrong, Please try again later!');
+        }
+      }
+      else{
+        console.log(error);
+        setNotif('');
+        setNotif('Something went wrong, Please try again later!');
+      }
+    });
   }
 
   return (
@@ -107,7 +139,7 @@ function NominationApplicationForm  (props) {
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
                   <Form role="form">
-                     {alert && <Alert color="dark">{alert}</Alert>}
+                     {notif && <Alert color="dark">{notif}</Alert>}
                     <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">

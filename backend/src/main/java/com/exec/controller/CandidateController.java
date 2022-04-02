@@ -243,8 +243,8 @@ public class CandidateController {
                 response.put("message", "Candidate not logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-            response.put("pk",Integer.toString(candidateservice.add_form(roll_no, body.get("form_link"))));
-            return new ResponseEntity<Object>(response, HttpStatus.OK);
+            candidateservice.add_form(roll_no, body.get("form_link"));
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -260,7 +260,13 @@ public class CandidateController {
                 response.put("message", "Candidate not logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-            candidateservice.remove_form(roll_no, body.get("form_link"));
+            try{
+                candidateservice.remove_form(roll_no, body.get("form_link"));
+            }
+            catch(Exception E){
+                response.put("message", "No such form found");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
     
            return ResponseEntity.status(HttpStatus.OK).build();
         }
@@ -270,7 +276,7 @@ public class CandidateController {
     }
 
     @GetMapping("/viewmyforms")
-    public ResponseEntity<Object> view_my_forms(@RequestBody Map<String, String> body, HttpSession session){
+    public ResponseEntity<Object> view_my_forms(HttpSession session){
         Map<String,String> response = new HashMap<>();
         try{
             String roll_no = utils.isLoggedIn(session);
@@ -279,10 +285,13 @@ public class CandidateController {
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
             List <String> forms = candidateservice.view_forms(roll_no); 
+            List<Map<String,String>> form_links = new ArrayList<>();
             for (Integer i = 0; i < forms.size(); ++i){
-                response.put("form" + i.toString(), forms.get(i));
+                response.put("name", "Form " + i.toString());
+                response.put("link", forms.get(i));
+                form_links.add(response);
             }
-            return new ResponseEntity<Object>(response, HttpStatus.OK);
+            return new ResponseEntity<Object>(form_links, HttpStatus.OK);
         }
         catch(Exception E){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

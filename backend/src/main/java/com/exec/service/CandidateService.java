@@ -72,24 +72,11 @@ public class CandidateService {
                 .orElseThrow(() -> new RuntimeException("No GBM found with roll_no: " + roll_no));
     }
 
-    public Integer add_form(String roll_no_candidate, String form_link){
+    public void add_form(String roll_no_candidate, String form_link){
         Candidate candidate = getCandidateByRoll(roll_no_candidate);
         if(candidate.is_activated == true){
-            List<Integer> value_set = new ArrayList<Integer>();
-            for (Map.Entry<String,Integer> entry : candidate.form_link.entrySet()){
-                value_set.add(entry.getValue());
-            }
-            Integer new_pk = 0;
-            for ( int i =0; i<value_set.size();++i){
-                if(value_set.get(i)>new_pk){
-                    new_pk = value_set.get(i);
-                }
-            }
-            new_pk = new_pk +1;
-            candidate.form_link.put(form_link,new_pk);
+            candidate.form_link.add(form_link);
             candidateRepository.save(candidate);
-            return new_pk;
-            // return 1;
         }
         else{
             throw new RuntimeException();
@@ -106,11 +93,10 @@ public class CandidateService {
         }
     }
 
-    public ArrayList<String> view_forms(String roll_no){
+    public List<String> view_forms(String roll_no){
         Candidate candidate = getCandidateByRoll(roll_no);
         if(candidate.is_activated == true){
-            Set<String> key_set = candidate.form_link.keySet();
-            return new ArrayList<String>(key_set);
+            return candidate.form_link;
         }
         else{
             throw new RuntimeException();

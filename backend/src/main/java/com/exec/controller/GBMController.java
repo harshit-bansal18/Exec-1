@@ -323,13 +323,13 @@ public class GBMController {
 
             if(gbm.is_campaigner)
             {
-                response.put("message", "Already a campaigner");
+                response.put("message", "Applicant already in some other Candidate's team");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
             if(gbm.applied_for_candidature){
                 response.put("message", "Already applied for candidature");
-                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
             if(body.Proposers.size() < 1){
@@ -356,11 +356,11 @@ public class GBMController {
                 String _response = aspiringcandidateservice.applyCandidature(roll_no, body.Seconders, body.Proposers, body.manifesto_link, body.post);
                 if(_response != null){
                     if(_response.equals("Proposer")){
-                        response.put("message", "Proposer not valid");
+                        response.put("message", "Proposer already in some other Candidate's team");
                         return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
                     }
                     if(_response.equals("Seconder")){
-                        response.put("message", "Seconder not valid");
+                        response.put("message", "Seconder already in some other Candidate's team");
                         return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
                     }
                 }
