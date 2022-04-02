@@ -120,22 +120,17 @@ function ReportingPortal  (props) {
               <Row className="my-4">
                 <Col xs="12">
                       <span className="text-muted"> 
-                      <h3>Note:</h3> This portal is completely anonymous. Add a proper description and upload proofs. Fields of name, roll no and email are optional.
+                      <h3>Note:</h3> This portal is completely anonymous. Add a proper description of the complaint. Fields of name, roll no and email are optional.
                       <br />
-                      You can also upload more than 1 proofs.
                       </span>
                     
                 </Col>
                 </Row>
                 <Row className="my-4">
                     <Col sm="12" style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                      
-                      <Button className="mt-4" color="primary" type="input">
-                          Upload Files
-                      </Button>
 
                       <Button className="mt-4" color="primary" type="button" >
-                          Create account
+                          Report
                       </Button>   
                   </Col>
               </Row>
