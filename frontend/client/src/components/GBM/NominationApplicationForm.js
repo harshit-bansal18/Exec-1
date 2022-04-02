@@ -12,7 +12,7 @@ import { Container, Row , Button,
     InputGroupAddon,
     InputGroupText,
     InputGroup,
-    Col} from "reactstrap";
+    Col,Alert} from "reactstrap";
 
 import { Link, useHistory } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ function NominationApplicationForm  (props) {
   const history = useHistory();
   const [Proposercounter, setProposerCounter] = useState(1);
   const [Secondercounter, setSeconderCounter] = useState(2);
-
+  const [alert, setAlert] = useState('');
   React.useEffect(() => {
     document.body.classList.add("bg-default");
     return () => {
@@ -60,7 +60,11 @@ function NominationApplicationForm  (props) {
     const seconders = document.querySelectorAll('[name="seconder"]');
     const seconders_ = [...seconders].map(input => input.value);
     const manifesto_link_ = document.getElementById("manifesto").value;
-
+    if(post_===''||post_=="Select post to apply for" || proposers_==='' ||seconders_ ==='' ||manifesto_link_===''){
+            setAlert('');
+            setAlert('Please fill all the details required');
+            return;
+    }
     const nominationDetails = {
       post: post_,
       proposers: proposers_,
@@ -68,7 +72,7 @@ function NominationApplicationForm  (props) {
       manifesto_link: manifesto_link_
     }
 
-    //console.log(nominationDetails)
+    console.log(nominationDetails)
   }
 
   return (
@@ -102,7 +106,8 @@ function NominationApplicationForm  (props) {
           </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
-            <Form role="form">
+                  <Form role="form">
+                     {alert && <Alert color="dark">{alert}</Alert>}
                     <FormGroup>
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">

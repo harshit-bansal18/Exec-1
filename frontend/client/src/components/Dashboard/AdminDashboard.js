@@ -3,6 +3,7 @@ import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // core components
 import AdminDashboardNavbar from "components/Navbars/AdminDashboardNavbar.js";
 import AdminDashboardSidebar from "components/Sidebar/AdminDashboardSidebar.js";
+import NominationApplicationList from "components/Admin/NominationApplication";
 import admin_routes from "admin_routes.js";
 function AdminDashboard (props){
   const mainContent = React.useRef(null);
@@ -37,6 +38,7 @@ function AdminDashboard (props){
         <AdminDashboardNavbar/>
         <Switch>
           {getRoutes(admin_routes)}
+           <Route exact path="/admin/info/:id" render={(props) => <NominationApplicationList {...props} />} /> 
           <Redirect from="*" to="/pagenotfound" />
         </Switch>
       </div>
