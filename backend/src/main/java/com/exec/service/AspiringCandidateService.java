@@ -53,7 +53,6 @@ public class AspiringCandidateService{
         }
 
         if(gbm.applied_for_candidature || Seconders.size() < 2 || Proposers.size() < 1 || manifesto == null || post == null){
-            System.out.println("here");
             throw new RuntimeException();
         }else{
             AspiringCandidate aspiringcandidate = new AspiringCandidate(gbm.roll_no, gbm.name, gbm.email, Seconders, Proposers, manifesto, post);

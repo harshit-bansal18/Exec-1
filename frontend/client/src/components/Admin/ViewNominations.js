@@ -26,33 +26,66 @@ function ViewNominations(props) {
   //                                    {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
   // ]);
   const [nominee, setNominee] = useState([]);
+  const [changed, setChanged] = useState(true);
+  // const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
       async function fetchData() {
-        axios.defaults.withCredentials = true;
-        await axios
-          .get(base_url + "api/admin/viewAllNominations")
-          .then((response) => {
-            setNominee(response.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        if(changed == true){
+          axios.defaults.withCredentials = true;
+          await axios
+            .get(base_url + "api/admin/viewAllNominations")
+            .then((response) => {
+              setNominee(response.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          setChanged(false);
         }
-        fetchData();
-      }, []); 
+      }
+      fetchData();
+  }, [changed]); 
 
   const viewDetails = (event,id) => {
     history.push('/admin/info/'+id);
     event.preventDefault();
   };
 
-  const accept = event => {
-    // event.preventDefault();
+  const accept = async(event, roll_no) => {
+    event.preventDefault();
+
+    axios.defaults.withCredentials = true;
+    await axios
+      .post(base_url + "api/admin/acceptNomination", {
+        "roll_no": roll_no,
+      })
+      .then((response) => {
+        setChanged(true);
+        alert("nomination accepted");
+        // setShowModal(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const reject = event => {
-    // event.preventDefault();
+  const reject = async (event, roll_no) => {
+    event.preventDefault();
+
+    axios.defaults.withCredentials = true;
+    await axios
+      .post(base_url + "api/admin/rejectNomination", {
+        "roll_no": roll_no,
+      })
+      .then((response) => {
+        setChanged(true);
+        alert("Nomination deleted");
+        // setShowModal(false);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
   };
 
   const nomineeList = nominee.map((data) => {
@@ -71,11 +104,11 @@ function ViewNominations(props) {
           </Badge>
         </td>
         <td>
-          <button type="button" class="btn btn-success" onClick={accept(data.roll_no)}>Accept</button>
+          <button type="button" class="btn btn-success" onClick={(e) => accept(e, data.roll_no)}>Accept</button>
         </td>
         <td>
           <div className="d-flex align-items-center">
-            <button type="button" class="btn btn-danger" onClick={reject()}>Decline</button>
+            <button type="button" class="btn btn-danger" onClick={(e) => reject(e, data.roll_no)}>Decline</button>
           </div>
         </td>
         <td className="text-right">

@@ -4,7 +4,9 @@ import com.exec.EmailServiceImpl;
 import com.exec.Utils;
 import com.exec.model.CandidateInfo;
 import com.exec.model.GBM;
+import com.exec.model.Candidate;
 import com.exec.service.AspiringCandidateService;
+import com.exec.service.CandidateService;
 import com.exec.service.GBMService;
 import java.util.*;
 import com.exec.Utils;
@@ -30,12 +32,14 @@ public class GBMController {
     
     private final GBMService gbmservice;
     private final AspiringCandidateService aspiringcandidateservice;
+    private final CandidateService candidateService;
     private Utils utils = new Utils();
     private EmailServiceImpl emailSender= new EmailServiceImpl();
 
-    public GBMController(GBMService gbmservice, AspiringCandidateService aspiringcandidateservice) {
+    public GBMController(GBMService gbmservice, AspiringCandidateService aspiringcandidateservice, CandidateService candidateService) {
         this.gbmservice = gbmservice;
         this.aspiringcandidateservice = aspiringcandidateservice;
+        this.candidateService = candidateService;
     }
 
     //TODO: add the httpsession access level to admin when the class is made
@@ -254,7 +258,17 @@ public class GBMController {
                 response.put("message", "Candidate did not request for campaign");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-            emailSender.sendCampaignerAcceptanceMessage(body.get("email_candidate"), body.get("name_candidate"), gbm.name);
+
+            Candidate candidate;
+            try{
+                candidate = candidateService.getCandidateByRoll(body.get("roll_no_candidate"));
+            }
+            catch(Exception E){
+                response.put("message", "Candidate does not exist");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            emailSender.sendCampaignerAcceptanceMessage(candidate.email, gbm.name , candidate.name);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
         catch(Exception E){
@@ -262,7 +276,33 @@ public class GBMController {
         }
     }
 
-    //TODO: think about the removal of the reject campaign request function as a whole instead of just removing the notification feature
+    @PostMapping("/rejectCampaignRequest")
+    public ResponseEntity<Object> rejectCampaignRequest(@RequestBody Map<String, String> body, HttpSession session) {
+
+        try{
+            String roll_no = utils.isLoggedIn(session);
+            Map<String,String> response = new HashMap<>();
+ 
+            if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
+            {
+                response.put("message", "No GBM user logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            GBM gbm = gbmservice.getGBMByRoll(roll_no);
+            try{
+                gbmservice.rejectCampaignRequest(roll_no, body.get("roll_no_candidate"));
+            }
+            catch(Exception E){
+                response.put("message", "Candidate did not request for campaign");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
     @PostMapping("/fileNomination")
     public ResponseEntity<Object> fileNomination(@RequestBody CandidateInfo body, HttpSession session) {

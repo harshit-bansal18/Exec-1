@@ -256,7 +256,7 @@ public class AdminController {
             try{
                 gbm = gbmService.getGBMByRoll(body.get("roll_no"));
                 aspiringCandidateService.deleteCandidature(body.get("roll_no"));
-                gbmService.remove_applied_for_candidature(roll_no);
+                gbmService.remove_applied_for_candidature(body.get("roll_no"));
             }
             catch(Exception E)
             {
@@ -310,15 +310,17 @@ public class AdminController {
             }
             try{
                 Penalty penalty;
+                GBM gbm = gbmService.getGBMByRoll(body.get("roll_no"));
                 if(body.containsKey("remark"))
-                    penalty = new Penalty(body.get("role"), body.get("name"), body.get("roll_no"), body.get("fine"), body.get("level"), body.get("part"), body.get("remark"));
+                    penalty = new Penalty(body.get("role"), gbm.name, body.get("roll_no"), body.get("fine"), body.get("level"), body.get("part"), body.get("remark"));
                 else
-                    penalty = new Penalty(body.get("role"), body.get("name"), body.get("roll_no"), body.get("fine"), body.get("level"), body.get("part"), "");
+                    penalty = new Penalty(body.get("role"), gbm.name, body.get("roll_no"), body.get("fine"), body.get("level"), body.get("part"), "");
                 penaltyService.addPenalty(penalty);
+                emailSender.sendPenaltyImpositionMessage(gbm.email, penalty);
             }
             catch(Exception E)
             {
-                response.put("message", "Not all parameters are present");
+                response.put("message", "No such General Body Member with this roll no.");
                 return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
             }
             return ResponseEntity.status(HttpStatus.OK).build();

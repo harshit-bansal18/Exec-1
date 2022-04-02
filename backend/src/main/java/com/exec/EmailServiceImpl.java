@@ -37,10 +37,9 @@ public class EmailServiceImpl extends EmailSettings {
                 + "Thank you,\n"
                 + "ExeC Team");
         template_emails.put("Penalty Imposition", "Hey %s,\n\n"
-                + "A penalty of Rs. %s and Level %s has been imposed on you on the account of violation of\n"
-                + " %s of the Code of Conduct.\n"
-                + "Remark- %s.\n"
-                + "Penalty Id: %s\n\n"
+                + "A penalty of %s and %s has been imposed on you on the account of violation of\n"
+                + "%s of the Code of Conduct.\n"
+                + "Remark- %s.\n\n"
                 + "Thank you,\n"
                 + "Exec Team");
         template_emails.put("Candidature Acceptance","Hey %s,\n\n"
@@ -89,7 +88,7 @@ public class EmailServiceImpl extends EmailSettings {
     }
 
     public void sendPenaltyImpositionMessage(String to, Penalty pen) {
-        String text = String.format(template_emails.get("Penalty Imposition"), pen.name, pen.fine, pen.level, pen.part, pen.remark, pen.id);
+        String text = String.format(template_emails.get("Penalty Imposition"), pen.name, pen.fine, pen.level, pen.part, pen.remark);
         String subject = template_subjects.get("Penalty Imposition");
         sendSimpleMessage(to, subject, text);
     }

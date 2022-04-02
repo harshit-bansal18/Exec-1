@@ -14,23 +14,76 @@ import {
 } from "reactstrap";
 // core components
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import axios from 'axios';
+
 function CampaignTables(props) {
   
-  const [requester,setRequester] = useState([{ id: 1,roll_no:'200122', name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
-                                     {id:2,roll_no:'200122',name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
-                                     {id:3,roll_no:'200122',name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-                                     {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-  ]);
+  const [requester,setRequester] = useState([]);
+  const [changed, setChanged] = useState(true);
+  const base_url = "http://localhost:8080/";
   
   
   const history = useHistory();
 
-  const details = (event,id) => {
-    history.push('/info/'+id);
+  useEffect(() => {
+    async function fetchData() {
+      if(changed == true){
+        axios.defaults.withCredentials = true;
+        await axios
+          .get(base_url + "api/GBM/campaignRequests")
+          .then((response) => {
+            setRequester(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        setChanged(false);
+      }
+    }
+    fetchData();
+  }, [changed]);
+
+  const accept = async(event, roll_no) => {
     event.preventDefault();
-  }
+
+    axios.defaults.withCredentials = true;
+    await axios
+      .post(base_url + "api/GBM/acceptCampaignRequest", {
+        "roll_no_candidate": roll_no,
+      })
+      .then((response) => {
+        setChanged(true);
+        alert("nomination accepted");
+        // setShowModal(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const reject = async(event, roll_no) => {
+    event.preventDefault();
+
+    axios.defaults.withCredentials = true;
+    await axios
+      .post(base_url + "api/GBM/rejectCampaignRequest", {
+        "roll_no_candidate": roll_no,
+      })
+      .then((response) => {
+        setChanged(true);
+        alert("nomination rejected");
+        // setShowModal(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  // const details = (event,id) => {
+  //   history.push('/info/'+id);
+  //   event.preventDefault();
+  // }
 
   const requesterList = requester.map((item) => {
     return (
@@ -41,41 +94,19 @@ function CampaignTables(props) {
                           </span>
                        
                     </th>
-                      <td>{item.desc}</td>
+                      <td>{item.post}</td>
                     <td>
                       <Badge color="" className="badge-dot mr-4">
                         {item.roll_no}           
                       </Badge>
                     </td>
                     <td>
-                     <button type="button" class="btn btn-success">Accept</button>
+                     <button type="button" class="btn btn-success" onClick={(e) => accept(e, item.roll_no)}>Accept</button>
                     </td>
                     <td>
                       <div className="d-flex align-items-center">
-                        <button type="button" class="btn btn-danger">Decline</button>
+                        <button type="button" class="btn btn-danger" onClick={(e) => reject(e, item.roll_no)}>Decline</button>
                       </div>
-                    </td>
-                    <td className="text-right">
-                      <UncontrolledDropdown>
-                        <DropdownToggle
-                          className="btn-icon-only text-light"
-                          href="#pablo"
-                          role="button"
-                          size="sm"
-                          color=""
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <i className="fas fa-ellipsis-v" />
-                        </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                          <DropdownItem
-                            href="#pablo"
-                            onClick={(event) => details(event,item.id)}
-                          >
-                            View Complete Details
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
                     </td>
                   </tr>
     );

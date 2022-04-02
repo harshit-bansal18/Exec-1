@@ -1,5 +1,6 @@
 // reactstrap components
 import React,{useEffect, useState} from 'react';
+import axios from 'axios';
 import {
   Card,
   CardHeader,
@@ -24,8 +25,83 @@ import { isJSDocReadonlyTag } from 'typescript';
 
 function ManagePenalty(props) {
     const [notificationModal, setNotificationModal] = useState({ visible: false });
-    const [penaltyList, setPenaltyList] = useState([{roll_no:200471,name:"Jaya",post:"Gensec",clause:"COC Clause 1",level:2,fine:5000}]);
+    const [changed, setChanged] = useState(true);
+    const [penaltyList, setPenaltyList] = useState([]);
     const history = useHistory();
+    const base_url = "http://localhost:8080/";
+
+    useEffect(() => {
+      async function fetchData() {
+        if(changed == true){
+          axios.defaults.withCredentials = true;
+          await axios
+            .get(base_url + "api/admin/viewAllPenalties")
+            .then((response) => {
+              setPenaltyList(response.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          setChanged(false);
+        }
+      }
+      fetchData();
+    }, [changed]); 
+
+    const deletePenalty = async(event, id) => {
+      event.preventDefault();
+
+      axios.defaults.withCredentials = true;
+      await axios
+        .post(base_url + "api/admin/removePenalty", {
+          "penalty_id": id,
+        })
+        .then((response) => {
+          setChanged(true);
+          alert("Penalty deleted");
+        })
+        .catch((error) => {
+          console.log(error.response);
+        });
+    }
+
+    const addPenalty = async(event) => {
+      event.preventDefault();
+      let role = document.getElementById('role').value;
+      let roll_no = document.getElementById('roll_no').value;
+      let part = "Part " + document.getElementById('part').value;
+      let level = "Level " + document.getElementById('level').value;
+      let fine = "Rs " + document.getElementById('fine').value;
+      let remark = document.getElementById('remark').value;
+
+      console.log("Sending request");
+      console.log(role);
+      axios.defaults.withCredentials = true;
+      await axios
+        .post(base_url + "api/admin/addPenalty", {
+          "role": role,
+          "roll_no": roll_no,
+          "part": part,
+          "level": level,
+          "fine": fine,
+          "remark": remark,
+          })
+        .then((response) => {
+          setChanged(true);
+          alert("Penalty added");
+          toggleModal(false);
+        })
+        .catch((error) => {
+          if(error.response != undefined){
+            if(error.response.status === 400 && error.response.data.message != undefined)
+              alert(error.response.data.message);
+          }
+          else
+            console.log(error);
+        });
+    }
+
+
     function toggleModal(value) {
       let info={visible:value}
       setNotificationModal(info)
@@ -34,19 +110,21 @@ function ManagePenalty(props) {
   
     const PenaltyList = penaltyList.map((data) => {
         return (
-            <>
+            <>  
+            <tr>
                 <th scope="row">
                             <span className="mb-0 text-sm">
-                        {data.post} 
+                        {data.role} 
                             </span>
                         
                 </th>
                 <td>{data.name}</td>
                 <td>{data.roll_no}</td>
-                <td>{data.clause}</td>
+                <td>{data.part}</td>
                 <td>{data.level}</td>
                 <td>{data.fine}</td>
-                <td><Button>Delete</Button></td>
+                <td><Button onClick={(e) => deletePenalty(e, data.id)}>Delete</Button></td>
+                </tr>
             </>
         );
     });
@@ -73,10 +151,12 @@ function ManagePenalty(props) {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    required
                     placeholder="Candidate Roll Number"
                                       type="roll_no"
                                       name ="roll_no"
                     autoComplete="new-roll_no"
+                    id = "roll_no"
                   />
                 </InputGroup>
               </FormGroup>
@@ -88,29 +168,11 @@ function ManagePenalty(props) {
                       <i className="ni ni-lock-circle-open" />
                     </InputGroupText>
                   </InputGroupAddon>
-                  <Input
-                    placeholder="Candidate Name"
-                    type="name"
-                    name="name"
-                    autoComplete="new-name"
-                  />
-                </InputGroup>
-                          </FormGroup>
-                          <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input type="select" placeholder="Select your post" name = "post">
+                  <Input required type="select" placeholder="Select your post" name = "post" id="role">
 
-                          <option>Enter Post</option>
-                          <option>President,Student Gymkhana</option>
-                          <option>General Secretary,Science and Technology</option>
-                          <option>Senator Y20</option>
-                          <option>Senator Y19</option>
-                           <option>Senator Y18</option>
+                          <option>Enter Role</option>
+                          <option>General Body Member</option>
+                          <option>Candidate</option>
                     </Input>
                 </InputGroup>
                           </FormGroup>
@@ -122,10 +184,12 @@ function ManagePenalty(props) {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    required
                     placeholder="Add Clause"
                                       type="text"
                                       name="clause"
                     autoComplete="new-clause"
+                    id="part"
                   />
                 </InputGroup>
                           </FormGroup>
@@ -137,10 +201,12 @@ function ManagePenalty(props) {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    required
                     placeholder="Add Level"
                                       type="number"
                                       name = "level"
                     autoComplete="new-level"
+                    id="level"
                   />
                 </InputGroup>
                           </FormGroup>
@@ -152,16 +218,33 @@ function ManagePenalty(props) {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    required
                     placeholder="Add Fine Amount"
                                       type="numner"
                                       name = "fine"
                     autoComplete="new-fine"
+                    id="fine"
                   />
                 </InputGroup>
                           </FormGroup>
+                          <FormGroup>
+                          <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    placeholder="Add Remarks"
+                                      type="text"
+                                      name = "remark"
+                    autoComplete="new-remark"
+                    id="remark"
+                  />
+                </InputGroup>          
+                          </FormGroup>
                           
               <div className="text-center">
-                <Button block  className="my-4" color="primary" type="button" >
+                <Button block  className="my-4" color="primary" type="button" onClick={(e) => addPenalty(e)} >
                   Add Penalty
                 </Button>
                           </div>
@@ -220,9 +303,9 @@ function ManagePenalty(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  
                     {PenaltyList}
-                  </tr>
+                
                 </tbody>
               </Table>
             </Card>
