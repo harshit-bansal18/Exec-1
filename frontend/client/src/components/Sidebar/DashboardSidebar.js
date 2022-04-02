@@ -219,7 +219,7 @@ function DashboardSidebar (props){
               </NavLink>
             </NavItem>
              <NavItem>
-              <NavLink href="https://exec-backend.herokuapp.com/getPenaltyCsv" target="_blank">
+              <NavLink href="http://localhost:8080/getPenaltyCsv" target="_blank">
                 <i className="ni ni-ui-04" />
                 Penalty Sheet
               </NavLink>

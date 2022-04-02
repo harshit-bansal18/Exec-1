@@ -13,16 +13,34 @@ import {
   Button,
 } from "reactstrap";
 // core components
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import axios from "axios";
 
 function ViewNominations(props) {
   const history = useHistory();
-   const [nominee,setNominee]=useState([{ id: 1,roll_no:'200122', name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
-                                     {id:2,roll_no:'200122',name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
-                                     {id:3,roll_no:'200122',name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-                                     {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-  ]);
+  const base_url = "http://localhost:8080/";
+  //  const [nominee,setNominee]=useState([{ id: 1,roll_no:'200122', name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
+  //                                    {id:2,roll_no:'200122',name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
+  //                                    {id:3,roll_no:'200122',name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+  //                                    {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+  // ]);
+  const [nominee, setNominee] = useState([]);
+
+  useEffect(() => {
+      async function fetchData() {
+        axios.defaults.withCredentials = true;
+        await axios
+          .get(base_url + "api/admin/viewAllNominations")
+          .then((response) => {
+            setNominee(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
+        fetchData();
+      }, []); 
 
   const viewDetails = (event,id) => {
     history.push('/admin/info/'+id);
@@ -46,14 +64,14 @@ function ViewNominations(props) {
           </span>
                        
         </th>
-        <td>{data.desc}</td>
+        <td>{data.post}</td>
         <td>
           <Badge color="" className="badge-dot mr-4">
             {data.roll_no}
           </Badge>
         </td>
         <td>
-          <button type="button" class="btn btn-success" onClick={accept()}>Accept</button>
+          <button type="button" class="btn btn-success" onClick={accept(data.roll_no)}>Accept</button>
         </td>
         <td>
           <div className="d-flex align-items-center">
@@ -101,7 +119,7 @@ function ViewNominations(props) {
           <div className="col">
             <Card className="bg-default shadow">
               <CardHeader className="bg-transparent border-0">
-                <h3 className="text-white mb-0">Campaign Request</h3>
+                <h3 className="text-white mb-0">Nominations Filed</h3>
               </CardHeader>
               <Table
                 className="align-items-center table-dark table-flush"
