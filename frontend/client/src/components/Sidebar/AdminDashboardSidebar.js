@@ -154,6 +154,12 @@ function AdminDashboardSidebar (props){
                     View Nomination
               </NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink href="/admin/manage-penalty">
+                <i className="ni ni-spaceship" />
+                    Manage Penalties
+              </NavLink>
+            </NavItem>
           </Nav>
           <hr className="my-3" />
            <Nav className="mb-md-3" navbar>
