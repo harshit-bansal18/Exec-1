@@ -53,6 +53,7 @@ public class AspiringCandidateService{
         }
 
         if(gbm.applied_for_candidature || Seconders.size() < 2 || Proposers.size() < 1 || manifesto == null || post == null){
+            System.out.println("here");
             throw new RuntimeException();
         }else{
             AspiringCandidate aspiringcandidate = new AspiringCandidate(gbm.roll_no, gbm.name, gbm.email, Seconders, Proposers, manifesto, post);
@@ -80,6 +81,8 @@ public class AspiringCandidateService{
 
     public void acceptCandidature(String roll, String name, String email){
         AspiringCandidate aspiringCandidate = getAspiringCandidateByRoll(roll);
+        gbmService.setIsCampaigner(roll);
+        
         Candidate candidate = new Candidate(roll, name, email, aspiringCandidate.post, aspiringCandidate.Seconders, aspiringCandidate.Proposers, aspiringCandidate.manifesto);
         for(String roll_no : aspiringCandidate.Seconders){
             GBM gbm = gbmService.getGBMByRoll(roll_no);

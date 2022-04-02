@@ -31,10 +31,58 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import {useHistory,Link} from 'react-router-dom';
+import React,{useState} from 'react';
+import {useHistory} from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { login } from 'actions/userActions';
+import { useDispatch } from 'react-redux';
 
 function AdminLogin (props) {
+  const [error,setError]=useState('');
   const history=useHistory();
+  const base_url = "http://localhost:8080/";
+  const dispatch = useDispatch();
+
+  async function loginUser(){
+    let password=document.getElementById('password').value;
+
+    if(password == ''){
+        setError('');
+        setError('Please fill all the details required');
+        return;
+    }
+
+    axios.defaults.withCredentials = true;
+    await axios
+      .post(base_url + "api/admin/login", {
+        "password":password,
+      })
+      .then((res) => {
+        if(res.status == 200){
+            dispatch(login(0, "Admin"));
+            history.push('/admin/dashboard');
+        }
+      })
+      .catch((err) => {
+        if(err.response != undefined){
+          if(err.response.status == 400){
+            console.log(err);
+            alert("Some error occured! Please try again later.");
+          }
+          else if(err.response.status == 401){
+            setError('');
+            setError(err.response.data.message);
+          }
+        }
+        else{
+          console.log(err);
+          alert("Some error occured! Please try again later.");
+        }
+      });
+
+  }
+
   return (
     <>
       <Col lg="5" md="7">
@@ -45,6 +93,7 @@ function AdminLogin (props) {
           </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
+          {error && <Alert variant="danger"> {error}</Alert>}
             <Form role="form">
               <FormGroup>
                 <InputGroup className="input-group-alternative">
@@ -56,12 +105,13 @@ function AdminLogin (props) {
                   <Input
                     placeholder="Password"
                     type="password"
-                    autoComplete="new-password"
+                    autoComplete="password"
+                    id="password"
                   />
                 </InputGroup>
               </FormGroup>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button" onClick={()=> {history.push('/admin/dashboard')}}>
+                <Button className="my-4" color="primary" type="button" onClick={()=> loginUser()}>
                   Log in
                 </Button>
                           </div>

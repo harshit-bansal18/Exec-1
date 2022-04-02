@@ -42,41 +42,26 @@ public class PublicController {
     }
 
     @GetMapping("/viewCandidate")
-    public ResponseEntity<Object> viewCandidate(@RequestParam(value = "roll") String roll){
-        Candidate candidate = candidateservice.getCandidateByRoll(roll);
-        Map<String, String> candidateInfo = new HashMap<String, String>();
+    public ResponseEntity<Object> viewCandidate(@RequestParam(value = "roll_no") String roll){
 
-        candidateInfo.put("name", candidate.name);
-        candidateInfo.put("post", candidate.post);
-        candidateInfo.put("email", candidate.email);
-        candidateInfo.put("manifesto", candidate.manifesto_link);
-        candidateInfo.put("poster", candidate.poster_link);
+        Map<String, String> response = new HashMap<String, String>(); 
 
-        Integer listSize = candidate.Proposers.size();
-        candidateInfo.put("num_proposers", Integer.toString(listSize));
-        listSize = candidate.Seconders.size();
-        candidateInfo.put("num_seconders", Integer.toString(listSize));
-        listSize = candidate.video_links.size();
-        candidateInfo.put("num_video_links", Integer.toString(listSize));
-
-        String temp;
-        // * Adding all the proposers, seconders, links 
-        temp = "proposer";
-        for (int i = 0; i < candidate.Proposers.size(); i++) {
-            candidateInfo.put(temp + Integer.toString(i+1), candidate.Proposers.get(i));
+        try{
+            try{
+                Candidate candidate = candidateservice.getCandidateByRoll(roll);
+            }
+            catch(Exception e){
+                response.put("message", "No candidate found with roll number: " + roll);
+                return new ResponseEntity<Object>(response, HttpStatus.NOT_FOUND);
+            }
+            
+            CandidateInfo candidateInfo = candidateservice.getCandidateInfo(roll);
+            return  new ResponseEntity<Object>(candidateInfo, HttpStatus.OK);
         }
-
-        temp = "seconder";
-        for (int i = 0; i < candidate.Seconders.size(); i++) {
-            candidateInfo.put(temp + Integer.toString(i+1), candidate.Seconders.get(i));
+        catch(Exception E)
+        {
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
         }
-
-        temp = "videolink";
-        for (int i = 0; i < candidate.video_links.size(); i++) {
-            candidateInfo.put(temp + Integer.toString(i+1), candidate.video_links.get(i));
-        }
-        
-        return  new ResponseEntity<Object>(candidateInfo, HttpStatus.OK);
     }
     @GetMapping("/viewAnnouncements")
     public ResponseEntity<Object> viewAnnouncements(){

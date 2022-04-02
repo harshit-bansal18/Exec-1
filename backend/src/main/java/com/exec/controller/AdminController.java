@@ -355,7 +355,7 @@ public class AdminController {
     @GetMapping("/viewAllPenalties")
     public ResponseEntity<Object> view_all_penalties(HttpSession session){
         Map<String, String> response = new HashMap<>();
-        // try{
+        try{
             String roll_no = utils.isLoggedIn(session);
             if(roll_no == null || !session.getAttribute("access_level").equals("Admin")){
                 response.put("message", "No Admin login found");
@@ -363,10 +363,10 @@ public class AdminController {
             }
             List<Penalty> penalties = penaltyService.getAllPenalties();
             return new ResponseEntity<Object>(penalties, HttpStatus.OK);
-        // }
-        // catch(Exception E){
-        //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        // }
+        }
+        catch(Exception E){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
     //WARNING: DO NOT UNCOMMENT THE UNDERLYING PORTION
 

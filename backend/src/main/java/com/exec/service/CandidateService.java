@@ -5,6 +5,7 @@ import java.util.ArrayList;
 // import javax.management.RuntimeErrorException;
 
 import com.exec.model.Candidate;
+import com.exec.model.CandidateInfo;
 import com.exec.model.GBM;
 import com.exec.repository.CandidateRepository;
 import com.exec.repository.GBMRepository;
@@ -116,6 +117,29 @@ public class CandidateService {
         }
     }
 
+    public CandidateInfo getCandidateInfo(String roll_no){
+
+        try{
+            Candidate candidate = getCandidateByRoll(roll_no);
+            
+            CandidateInfo candidateInfo = new CandidateInfo(candidate.name, 
+                                                            candidate.roll_no, 
+                                                            candidate.Campaigners, 
+                                                            candidate.Proposers, 
+                                                            candidate.Seconders, 
+                                                            candidate.manifesto_link, 
+                                                            candidate.video_links, 
+                                                            candidate.poster_link, 
+                                                            candidate.post, 
+                                                            candidate.form_link);
+
+            return candidateInfo;
+        }
+        catch(Exception E){
+            throw new RuntimeException();
+        }
+    }
+
     public List< Map<String, String> > getAllCandidatesBasicInfo(){
         List<Candidate> allCandidates = candidateRepository.findAll();
         List< Map<String, String> > BasicInfo = new ArrayList< Map<String, String> >();
@@ -124,7 +148,7 @@ public class CandidateService {
             Map<String, String> candidateInfo = new HashMap<String, String>();
             candidateInfo.put("name", candidate.name);
             candidateInfo.put("post", candidate.post);
-            candidateInfo.put("email", candidate.email);
+            candidateInfo.put("roll_no", candidate.roll_no);
 
             BasicInfo.add(candidateInfo);
         }

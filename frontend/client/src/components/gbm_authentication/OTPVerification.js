@@ -1,6 +1,8 @@
 import React,{useState} from 'react';
 import {Link,useHistory} from 'react-router-dom';
+import axios from 'axios';
 import {Alert} from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import "../../assets/css/sb-admin-2.css";
 import {
   UncontrolledCollapse,
@@ -13,6 +15,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+
 // import {Auth} from '../../context/AuthContext';
 
 export default function OTPVerification(props) {
@@ -20,6 +23,7 @@ export default function OTPVerification(props) {
     // const {googleSignup,facebookSignup,signup,CurrentUser,errorCode,errorMessage,logout}=Auth();  
     const [error,setError]=useState('');
     const history=useHistory();
+    const base_url = "http://localhost:8080/";
     
 
     async function registerAccount(values){
@@ -40,7 +44,36 @@ export default function OTPVerification(props) {
             return;
         }
 
-      history.push('/gbm/login');
+        // axios.defaults.headers.post['Content-Type'] = 'application/json';
+        axios.defaults.withCredentials = true;
+        await axios
+          .post(base_url + "api/GBM/changePassword", {
+            "otp":otp,
+            "password":password,
+          })
+          .then((res) => {
+            if(res.status == 200)
+            {
+              alert("Signed up successfully. Please proceed to login");
+              history.push('/gbm/login');
+            }
+          })
+          .catch((err) => {
+            if(err.response != undefined){
+              if(err.response.status == 400){
+                console.log(err);
+                alert("Some error occured! Please try again later.");
+              }
+              else if(err.response.status == 401){
+                setError('');
+                setError(err.response.data.message);
+              }
+            }
+            else{
+              console.log(err);
+              alert("Some error occured! Please try again later.");
+            }
+          });
 
     }
 

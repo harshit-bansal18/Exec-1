@@ -19,6 +19,7 @@ public class EmailSettings {
         mailSender.setPort(587);
         
         mailSender.setUsername("appexec4@gmail.com");
+        //TODO: iska koi alternative nikalo
         mailSender.setPassword(email_pass);
         
         Properties props = mailSender.getJavaMailProperties();

@@ -15,11 +15,12 @@ public class EmailServiceImpl extends EmailSettings {
 
     @Lazy
     @Autowired
-    private JavaMailSender emailSender = getJavaMailSender();
+    private JavaMailSender emailSender;
     private Map<String, String> template_emails = new HashMap<String, String>();
     private Map<String, String> template_subjects = new HashMap<String, String>();
 
     public EmailServiceImpl() {
+        emailSender = getJavaMailSender();
         template_emails.put( "OTP", "Hey %s,\n\n"
                 + "Please enter the following otp to complete the sign up process\n"
                 + "OTP: %s\n\n"

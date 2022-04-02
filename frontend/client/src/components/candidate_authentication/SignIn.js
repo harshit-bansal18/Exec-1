@@ -31,10 +31,59 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import {useHistory,Link} from 'react-router-dom';
+import React,{useState} from 'react';
+import {Link,useHistory} from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { login } from 'actions/userActions';
+import { useDispatch } from 'react-redux';
 
 function CandidateLogin (props) {
+  const [error,setError]=useState('');
   const history=useHistory();
+  const base_url = "http://localhost:8080/";
+  const dispatch = useDispatch();
+
+  async function loginUser(){
+    let roll_no=document.getElementById('roll_no').value;
+    let password=document.getElementById('password').value;
+
+    if(roll_no == '' || password == ''){
+        setError('');
+        setError('Please fill all the details required');
+        return;
+    }
+
+    axios.defaults.withCredentials = true;
+    await axios
+      .post(base_url + "api/candidate/login", {
+        "roll_no":roll_no,
+        "password":password,
+      })
+      .then((res) => {
+        if(res.status == 200){
+            dispatch(login(roll_no, "Candidate"));
+            history.push('/candidate/dashboard');
+        }
+      })
+      .catch((err) => {
+        if(err.response != undefined){
+          if(err.response.status == 400){
+            console.log(err);
+            alert("Some error occured! Please try again later.");
+          }
+          else if(err.response.status == 401){
+            setError('');
+            setError(err.response.data.message);
+          }
+        }
+        else{
+          console.log(err);
+          alert("Some error occured! Please try again later.");
+        }
+      });
+
+  }
   return (
     <>
       <Col lg="5" md="7">
@@ -45,21 +94,17 @@ function CandidateLogin (props) {
           </div>
           </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
-              <small>Or sign in with credentials</small>
-            </div>
+          {error && <Alert variant="danger"> {error}</Alert>}
             <Form role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-email-83" />
-                    </InputGroupText>
-                  </InputGroupAddon>
+                  {/* <InputGroupAddon addonType="prepend">
+                  </InputGroupAddon> */}
                   <Input
-                    placeholder="Email"
-                    type="email"
-                    autoComplete="new-email"
+                    placeholder="Roll no"
+                    type="roll-no"
+                    autoComplete="roll-no"
+                    id="roll_no"
                   />
                 </InputGroup>
               </FormGroup>
@@ -73,19 +118,20 @@ function CandidateLogin (props) {
                   <Input
                     placeholder="Password"
                     type="password"
-                    autoComplete="new-password"
+                    autoComplete="password"
+                    id="password"
                   />
                 </InputGroup>
               </FormGroup>
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button" onClick={()=> {history.push('/candidate/dashboard')}}>
+                <Button className="my-4" color="primary" type="button" onClick={()=> loginUser()}>
                   Sign in
                 </Button>
                           </div>
                 <div className="text-center">
                               Do not have a account?<Link to="/candidate/signup" class="small" >Signup</Link>
                               <br/><br/>
-                              <Link to="/candidate/forget" class="small" >Forget Password</Link>
+                              {/* <Link to="/candidate/forget" class="small" >Forget Password</Link> */}
               </div>
             </Form>
           </CardBody>

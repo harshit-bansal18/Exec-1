@@ -1,6 +1,9 @@
 import React,{useState} from 'react';
 import {Link,useHistory} from 'react-router-dom';
 import { Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { login } from 'actions/userActions';
+import { useDispatch } from 'react-redux';
 import {
   UncontrolledCollapse,
   NavbarBrand,
@@ -18,12 +21,51 @@ export default function SignIn(props) {
     // const {googleSignup,facebookSignup,login}=Auth();
     const [error,setError]=useState('');
     const history=useHistory();
+    const base_url = "http://localhost:8080/";
 
     async function loginUser(){
         let roll_no=document.getElementById('roll_no').value;
         let password=document.getElementById('password').value;
 
+        if(roll_no == '' || password == ''){
+            setError('');
+            setError('Please fill all the details required');
+            return;
+        }
+
+        // axios.defaults.headers.post['Content-Type'] = 'application/json';
+        axios.defaults.withCredentials = true;
+        await axios
+          .post(base_url + "api/GBM/login", {
+            "roll_no":roll_no,
+            "password":password,
+          })
+          .then((res) => {
+            if(res.status == 200){
+                dispatch(login(roll_no, "GBM"));
+                history.push('/gbm/dashboard');
+            }
+          })
+          .catch((err) => {
+            if(err.response != undefined){
+              if(err.response.status == 400){
+                console.log(err);
+                alert("Some error occured! Please try again later.");
+              }
+              else if(err.response.status == 401){
+                setError('');
+                setError(err.response.data.message);
+              }
+            }
+            else{
+              console.log(err);
+              alert("Some error occured! Please try again later.");
+            }
+          })
+
     }
+
+    const dispatch = useDispatch();
     return (
     <div style={{backgroundColor:"blue",right:0,bottom:0,left:0,top:0,position:"fixed"}}>
             <div class="container">
@@ -99,14 +141,14 @@ export default function SignIn(props) {
                                             <input type="password" class="form-control form-control-user"
                                                 id="password" placeholder="Password" />
                                         </div>
-                                        <a  class="btn btn-primary btn-user btn-block" onClick={()=> {history.push('/gbm/dashboard')}}>
+                                        <a  class="btn btn-primary btn-user btn-block" onClick={()=> loginUser()}>
                                             Login
                                         </a>
                                     </form>
                                     <hr/>
-                                    <div class="text-center">
+                                    {/* <div class="text-center">
                                         <Link to="/gbm/forget">Forgot Password?</Link>
-                                    </div>
+                                    </div> */}
                                     <div class="text-center">
                                         <Link to="/gbm/signup" class="small" >Create an Account!</Link>
                                     </div>

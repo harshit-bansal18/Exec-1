@@ -2,10 +2,12 @@ package com.exec.controller;
 
 import com.exec.EmailServiceImpl;
 import com.exec.Utils;
+import com.exec.model.CandidateInfo;
 import com.exec.model.GBM;
 import com.exec.service.AspiringCandidateService;
 import com.exec.service.GBMService;
 import java.util.*;
+import com.exec.Utils;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -145,8 +146,14 @@ public class GBMController {
                 response.put("message", "Already logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-
-            GBM gbm = gbmservice.getGBMByRoll(body.get("roll_no"));
+            GBM gbm;
+            try{
+                gbm = gbmservice.getGBMByRoll(body.get("roll_no"));
+            }
+            catch(Exception E){
+                response.put("message", "Invalid roll no.");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if(! passwordEncoder.matches(body.get("password"), gbm.password)){
                 response.put("message", "Invalid credentials");
@@ -258,12 +265,12 @@ public class GBMController {
     //TODO: think about the removal of the reject campaign request function as a whole instead of just removing the notification feature
 
     @PostMapping("/fileNomination")
-    public ResponseEntity<Object> fileNomination(@RequestBody Map<String, String> body, @RequestParam("Proposers") List<String> Proposers, @RequestParam("Seconders") List<String> Seconders, HttpSession session) {
+    public ResponseEntity<Object> fileNomination(@RequestBody CandidateInfo body, HttpSession session) {
         
         Map<String, String> response = new HashMap<>();
 
         try{
-            String roll_no = body.get("roll_no");
+            String roll_no = utils.isLoggedIn(session);
             if(roll_no == null || !session.getAttribute("access_level").equals("GBM"))
             {
                 response.put("message", "No GBM user logged in");
@@ -271,31 +278,51 @@ public class GBMController {
             }
 
             GBM gbm = gbmservice.getGBMByRoll(roll_no);
+            body.Seconders = Utils.removeDuplicates(body.Seconders);
+            body.Proposers = Utils.removeDuplicates(body.Proposers);
+
+            if(gbm.is_campaigner)
+            {
+                response.put("message", "Already a campaigner");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
 
             if(gbm.applied_for_candidature){
                 response.put("message", "Already applied for candidature");
                 return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
             }
 
-            if(Proposers.size() < 1){
+            if(body.Proposers.size() < 1){
                 response.put("message", "No proposers");
                 return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
             }
             
-            if(Seconders.size() < 2){
+            if(body.Seconders.size() < 2){
                 response.put("message", "Atleast two seconders required");
                 return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
             }
 
+            if(body.manifesto_link == null){
+                response.put("message", "No manifesto link");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+
+            if(body.post == null){
+                response.put("message", "No post specified");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+
             try{
-                String _response = aspiringcandidateservice.applyCandidature(roll_no, Proposers, Seconders, body.get("manifesto"), body.get("post"));
-                if(_response.equals("Proposer")){
-                    response.put("message", "Proposer not valid");
-                    return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
-                }
-                if(_response.equals("Seconder")){
-                    response.put("message", "Seconder not valid");
-                    return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+                String _response = aspiringcandidateservice.applyCandidature(roll_no, body.Seconders, body.Proposers, body.manifesto_link, body.post);
+                if(_response != null){
+                    if(_response.equals("Proposer")){
+                        response.put("message", "Proposer not valid");
+                        return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+                    }
+                    if(_response.equals("Seconder")){
+                        response.put("message", "Seconder not valid");
+                        return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+                    }
                 }
             }
             catch(Exception E){

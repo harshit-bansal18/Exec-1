@@ -213,8 +213,14 @@ public class CandidateController {
                 response.put("message", "Already logged in");
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
-
-            Candidate candidate = candidateservice.getCandidateByRoll(body.get("roll_no"));
+            Candidate candidate;
+            try{
+                candidate = candidateservice.getCandidateByRoll(body.get("roll_no"));
+            }
+            catch(Exception E){
+                response.put("message", "No candidate with this roll no.");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if(! passwordEncoder.matches(body.get("password"), candidate.password)){
                 response.put("message", "Invalid credentials");
@@ -308,7 +314,7 @@ public class CandidateController {
     }
 
     @PostMapping("/addVideos")
-    public ResponseEntity<Object> add_video(@RequestBody List<String> body, HttpSession session){
+    public ResponseEntity<Object> add_video(@RequestBody Map<String, String> body, HttpSession session){
         try {
             Map<String, String> response = new HashMap<String, String>();
             String roll_no = utils.isLoggedIn(session);
@@ -317,9 +323,7 @@ public class CandidateController {
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
-            for (String i : body) {
-                candidateservice.add_video(roll_no, i);
-            }
+            candidateservice.add_video(roll_no, body.get("video_link"));
 
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
@@ -327,8 +331,8 @@ public class CandidateController {
         }
     }
 
-    @PostMapping("/addPosters")
-    public ResponseEntity<Object> add_poster(@RequestBody List<String> body, HttpSession session){
+    @PostMapping("/addPoster")
+    public ResponseEntity<Object> add_poster(@RequestBody Map<String,String> body, HttpSession session){
         try {
             Map<String, String> response = new HashMap<String, String>();
             String roll_no = utils.isLoggedIn(session);
@@ -337,9 +341,13 @@ public class CandidateController {
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
-            for (String i : body) {
-                candidateservice.add_poster(roll_no, i);
+            Candidate candidate = candidateservice.getCandidateByRoll(roll_no);
+            if(candidate.poster_link != null){
+                response.put("message", "Poster already uploaded");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
+
+            candidateservice.add_poster(roll_no, body.get("poster_link"));
 
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {

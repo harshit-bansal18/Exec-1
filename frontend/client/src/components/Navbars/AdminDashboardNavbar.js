@@ -1,4 +1,7 @@
 import { Link,useHistory} from "react-router-dom";
+import axios from "axios";
+import { logout } from "actions/userActions";
+import { useDispatch } from "react-redux";
 //import {Auth} from '../../context/AuthContext';
 // reactstrap components
 import {
@@ -20,8 +23,23 @@ import {
 
 function AdminDashboardNavbar (props) {
   const history=useHistory();
-  function Logout(){ 
-    history.push('/admin/login');
+  const base_url = "http://localhost:8080/";
+  const dispatch = useDispatch();
+
+  async function Logout(){ 
+    axios.defaults.withCredentials = true;
+    await axios
+      .post(base_url + "api/admin/logout", {})
+      .then((res) => {
+        if(res.status == 200){
+          dispatch(logout());
+          history.push('/admin/login');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Some error occured! Please try again later.");
+      });
   }
   return (
     <>

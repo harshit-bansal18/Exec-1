@@ -2,6 +2,9 @@ import React,{useState} from 'react';
 import {Link,useHistory} from 'react-router-dom';
 import {Alert} from 'react-bootstrap';
 import "../../assets/css/sb-admin-2.css";
+import axios from 'axios';
+import { signup } from 'actions/userActions';
+import {useDispatch} from 'react-redux';
 import {
   UncontrolledCollapse,
   NavbarBrand,
@@ -13,39 +16,58 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { isConstructorDeclaration } from 'typescript';
 // import {Auth} from '../../context/AuthContext';
 
 export default function SignUp(props) {
    
-    // const {googleSignup,facebookSignup,signup,CurrentUser,errorCode,errorMessage,logout}=Auth();  
     const [error,setError]=useState('');
     const history=useHistory();
+    // const base_url = "https://exec-backend.herokuapp.com/";
+    const base_url = "http://localhost:8080/";
     
 
     async function registerAccount(values){
 
         let roll_no=document.getElementById('roll_no').value;
-        // let password=document.getElementById('password').value;
-        // let confirmPassword=document.getElementById('confirmPassword').value; 
-        // let firstName=document.getElementById('firstName').value;  
-        // let lastName=document.getElementById('lastName').value; 
 
         if(roll_no===''){
             setError('');
             setError('Please fill all the details required');
             return;
         }
-
-        // if(confirmPassword!==password){
-        //     setError('');
-        //     setError('Passwords do not match');
-        //     return;
-        // }
-
-      history.push('/gbm/otp-verification');
+        axios.defaults.withCredentials = true;
+        await axios
+          .post(base_url+"api/GBM/signup", {
+            "roll_no":roll_no,
+          })
+          .then((res) => {
+            if(res.status == 200){
+              alert("Please check your IITK email for otp");
+              // dispatch(signup(roll_no, "GBM"));
+              history.push('/gbm/otp-verification');
+            }
+          })
+          .catch((err) => {
+            if(err.response != undefined){
+              if(err.response.status == 400){
+                console.log(err);
+                alert("Some error occured! Please try again later.");
+              }
+              else if(err.response.status == 401){
+                setError('');
+                setError(err.response.data.message);
+              }
+            }
+            else{
+              console.log(err);
+              alert("Some error occured! Please try again later.");
+            }
+          });
 
     }
 
+    const dispatch = useDispatch();
     return (
       <div style={{backgroundColor:"lightsteelblue",right:0,bottom:0,left:0,top:0,position:"fixed"}}>
             <div className="container">
@@ -136,9 +158,9 @@ export default function SignUp(props) {
                                 </a> */}
                             </form>
                             <hr />
-                            <div className="text-center">
+                            {/* <div className="text-center">
                                 <Link to="/gbm/forget" className="small" >Forgot Password?</Link>
-                            </div>
+                            </div> */}
                             <div className="text-center">
                                 <Link to="/gbm/login" className="small">Already have an account? Login!</Link>
                             </div>
