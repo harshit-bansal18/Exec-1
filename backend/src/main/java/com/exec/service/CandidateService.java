@@ -152,6 +152,28 @@ public class CandidateService {
         }
     }
 
+    public void remove_video(String roll_no, String link) {
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true) {
+            candidate.video_links.remove(link);
+            candidateRepository.save(candidate);
+        }
+        else {
+            throw new RuntimeException();
+        }
+
+    }
+
+    public List<String> view_videos(String roll_no) {
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true) {
+            return candidate.video_links;
+        }
+        else {
+            throw new RuntimeException();
+        }
+    }
+
     public void add_poster(String roll_no, String link){
         Candidate candidate = getCandidateByRoll(roll_no);
         if(candidate.is_activated == true){
@@ -159,6 +181,28 @@ public class CandidateService {
             candidateRepository.save(candidate);
         }
         else{
+            throw new RuntimeException();
+        }
+    }
+
+    public void remove_poster(String roll_no, String link) {
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true) {
+            candidate.poster_link = null;
+            candidateRepository.save(candidate);
+        }
+        else {
+            throw new RuntimeException();
+        }
+
+    }
+
+    public String view_poster(String roll_no) {
+        Candidate candidate = getCandidateByRoll(roll_no);
+        if(candidate.is_activated == true) {
+            return candidate.poster_link;
+        }
+        else {
             throw new RuntimeException();
         }
     }
