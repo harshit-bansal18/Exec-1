@@ -44,7 +44,7 @@ function MainDashboard(){
 
   function cardClick(id) {
     history.push('/info/'+id);
-}
+  }
 
   let contents;
 

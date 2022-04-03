@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import React,{ useState } from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 // nodejs library to set properties for components
@@ -143,7 +125,7 @@ function AdminDashboardSidebar (props){
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/reporting">
+              <NavLink href="/reporting" activeClassName="active">
                 <i className="ni ni-spaceship" />
                 Reporting Portal
               </NavLink>
@@ -158,6 +140,12 @@ function AdminDashboardSidebar (props){
               <NavLink href="/admin/manage-penalty">
                 <i className="ni ni-spaceship" />
                     Manage Penalties
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/admin/view-reports">
+                <i className="ni ni-spaceship" />
+                   View Reports
               </NavLink>
             </NavItem>
           </Nav>
