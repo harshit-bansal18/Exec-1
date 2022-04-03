@@ -10,6 +10,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.method.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -316,6 +318,53 @@ public class CandidateController {
         }
     }
 
+    @PostMapping("/removeVideos")
+    public ResponseEntity<Object> remove_video(@RequestBody Map<String, String> body, HttpSession session) {
+        try {
+            Map<String, String> response = new HashMap<String, String>();
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")) {
+                response.put("message", "No candidate logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+            try {
+                candidateservice.remove_video(roll_no, body.get("video_link"));
+            } catch(Exception e) {
+                response.put("message", "No such video found");
+                return new ResponseEntity<Object>(response, HttpStatus.BAD_REQUEST);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/viewmyvideos")
+    public ResponseEntity<Object> view_my_videos(HttpSession session) {
+        try {
+            Map<String, String> response = new HashMap<String, String>();
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")) {
+                response.put("message", "No candidate logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            List<String> videos = candidateservice.view_videos(roll_no);
+            List<Map<String,String>> video_links = new ArrayList<>();
+            for(Integer i = 0; i < videos.size(); i++) {
+                response.put("name", "Video " + i.toString());
+                response.put("link", videos.get(i));
+                video_links.add(response);
+            }
+
+            return new ResponseEntity<Object>(video_links, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
     @PostMapping("/addPoster")
     public ResponseEntity<Object> add_poster(@RequestBody Map<String,String> body, HttpSession session){
         try {
@@ -335,6 +384,47 @@ public class CandidateController {
             candidateservice.add_poster(roll_no, body.get("poster_link"));
 
             return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    //post request does not need any link since there is only one poster right?
+    @PostMapping("/removePoster")
+    public ResponseEntity<Object> remove_poster(HttpSession session) {
+        try {
+            Map<String, String> response = new HashMap<String, String>();
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")) {
+                response.put("message", "No candidate logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            candidateservice.remove_poster(roll_no);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    //does reponse need "name" field?
+    @PostMapping("/viewmyposter")
+    public ResponseEntity<Object> view_my_poster(HttpSession session) {
+        try {
+            Map<String, String> response = new HashMap<String, String>();
+            String roll_no = utils.isLoggedIn(session);
+            if(roll_no == null || !session.getAttribute("access_level").equals("Candidate")) {
+                response.put("message", "No candidate logged in");
+                return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
+            }
+
+            String poster = candidateservice.view_poster(roll_no);
+            response.put("name", "Poster 0");
+            response.put("link", poster);
+
+            return new ResponseEntity<Object>(response, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
