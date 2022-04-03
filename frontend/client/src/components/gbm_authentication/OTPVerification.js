@@ -24,6 +24,8 @@ export default function OTPVerification(props) {
     const [error,setError]=useState('');
     const history=useHistory();
     const base_url = "http://localhost:8080/";
+    const lrs = require('lrs');
+    const CryptoJS = require('crypto-js');
     
 
     async function registerAccount(values){
@@ -45,6 +47,8 @@ export default function OTPVerification(props) {
         }
 
         // axios.defaults.headers.post['Content-Type'] = 'application/json';
+        var secretKey=lrs.gen();
+        var encryptedKey=CryptoJS.AES.encrypt(secretKey['privateKey'].toString(), password).toString();
         axios.defaults.withCredentials = true;
         await axios
           .post(base_url + "api/GBM/changePassword", {

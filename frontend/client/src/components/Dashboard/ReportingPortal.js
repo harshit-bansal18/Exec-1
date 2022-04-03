@@ -2,7 +2,6 @@ import React,{Component} from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import {lrs} from 'lrs';
 import {CryptoJS} from 'crypto-js';
 // reactstrap components
 import {
@@ -28,6 +27,7 @@ function ReportingPortal  (props) {
   const location = useLocation();
   const base_url = "http://localhost:8080/";
   const [keys, setKeys] = useState([]);
+  const lrs = require('lrs');
 
   React.useEffect(() => {
     document.body.classList.add("bg-default");
@@ -60,7 +60,7 @@ function ReportingPortal  (props) {
       return;
     }
 
-    var roll_key = keys.find((obj) => {obj.roll == roll_no;});
+    var roll_key = keys.find((obj) => {return (obj.roll == roll_no)});
 
     if(roll_key == undefined){
       alert("This roll no hasn't signed up yet");
@@ -133,6 +133,7 @@ function ReportingPortal  (props) {
                         max-height="100px"
                         class="textarea"
                          rows="20" cols="100"
+                    id="message"
                   />
                   </InputGroup>
               </FormGroup>
@@ -148,7 +149,7 @@ function ReportingPortal  (props) {
                 <Row className="my-4">
                     <Col sm="12" style={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
 
-                      <Button className="mt-4" color="primary" type="button" >
+                      <Button className="mt-4" color="primary" type="button" onClick={(e) => addReport(e)}>
                           Report
                       </Button>   
                   </Col>
