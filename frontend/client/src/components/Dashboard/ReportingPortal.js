@@ -1,5 +1,6 @@
 import React,{Component} from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
+import axios from "axios";
 // reactstrap components
 import {
   Button,
@@ -22,6 +23,7 @@ import CandidateLoginNavbar from "components/Navbars/CandidateLoginNavbar";
 function ReportingPortal  (props) {
   const mainContent = React.useRef(null);
   const location = useLocation();
+  const base_url = "http://localhost:8080/";
 
   React.useEffect(() => {
     document.body.classList.add("bg-default");
@@ -34,6 +36,22 @@ function ReportingPortal  (props) {
     document.scrollingElement.scrollTop = 0;
     mainContent.current.scrollTop = 0;
   }, [location]);
+
+  async function addReport(event){
+    event.preventDefault();
+    let link = document.getElementById("link").value;
+
+    await axios
+      .get(base_url + "api/candidate/addform", {
+        "form_link": link,
+      })
+      .then((response) => {
+        alert("Form added");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } 
 
   return (
     <>

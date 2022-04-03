@@ -50,6 +50,8 @@ export default function OTPVerification(props) {
           .post(base_url + "api/GBM/changePassword", {
             "otp":otp,
             "password":password,
+            "public": secretKey['publicKey'].toString(),
+            "encrypted": encryptedKey,
           })
           .then((res) => {
             if(res.status == 200)
