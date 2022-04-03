@@ -65,6 +65,7 @@ export default function RoutingComponent(props) {
         <Route exact path="/admin/dashboard" render={(props) => <AdminDashboard {...props} />} />
         <Route exact path="/admin/view-nominations" render={(props) => <AdminDashboard {...props} />} />
         <Route exact path="/admin/manage-penalty" render={(props) => <AdminDashboard {...props} />} />
+        <Route exact path="/admin/view-reports" render={(props) => <AdminDashboard {...props} />} />
         <Route exact path="/admin/info/:id" render={(props) => <AdminDashboard {...props} />} />
         <Route exact path="/pagenotfound" children={<PageNotFound />} />
     </Switch>

@@ -2,7 +2,7 @@ import AdminLogin from "components/admin_authentication/SignIn";
 import MainDashboard from "components/Dashboard/MainDashboard";
 import ViewNominations from "components/Admin/ViewNominations.js";
 import ManagePenalty from "components/Admin/ManagePenalty";
-import NominationApplicationList from "components/Admin/NominationApplication";
+import ViewReports from "components/Admin/ViewReports";
 var admin_routes = [
   {
     path: "/admin/login",
@@ -30,6 +30,13 @@ var admin_routes = [
     name: "View Nominations",
     icon: "ni ni-single-02 text-yellow",
     component: ManagePenalty,
+    layout: "/ouradmin",
+  },
+  {
+    path: "/admin/view-reports",
+    name: "View Nominations",
+    icon: "ni ni-single-02 text-yellow",
+    component: ViewReports,
     layout: "/ouradmin",
   },
 ];

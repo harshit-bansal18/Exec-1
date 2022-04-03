@@ -65,62 +65,22 @@ function ReportingPortal  (props) {
               <h1>Anonymous Reporting Portal</h1>
             </div>
             <Form role="form">
-              <FormGroup>
-                <InputGroup className="input-group-alternative mb-3">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-hat-3" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Name" type="text" />
-                </InputGroup>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative mb-3">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-email-83" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="IITK Email"
-                    type="email"
-                    autoComplete="new-email"
-                    />
-                </InputGroup>
-              </FormGroup>
-              <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input
-                    placeholder="Roll No"
-                    type="rollno"
-                    autoComplete="rollno"
-                  />
-                  </InputGroup>
-                </FormGroup>
                 <FormGroup>
                 <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
-                    </InputGroupText>
-                  </InputGroupAddon>
                   <Input
                     placeholder="Description of the Complaint/Proof"
-                    type="rollno"
+                    type="textarea"
                     autoComplete="rollno"
+                        max-height="100px"
+                        class="textarea"
+                         rows="20" cols="100"
                   />
                   </InputGroup>
               </FormGroup>
               <Row className="my-4">
                 <Col xs="12">
                       <span className="text-muted"> 
-                      <h3>Note:</h3> This portal is completely anonymous. Add a proper description of the complaint. Fields of name, roll no and email are optional.
+                      <h3>Note:</h3> This portal is completely anonymous. Add a proper description of the complaint.
                       <br />
                       </span>
                     
