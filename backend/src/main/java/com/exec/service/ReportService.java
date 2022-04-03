@@ -26,20 +26,29 @@ public class ReportService {
     public void addReport(Report Report) {
         reportRepository.insert(Report);
     }
-    public List<String> publicKeys() {
+    public void addKey(Key kk) {
+        keyRepository.insert(kk);
+    }
+    public List<Key> getKeys() {
+        // List<String> myList = new ArrayList<String>();
+        // for(Key key: keyRepository.findAll()){
+        //     myList.add(key.getPublicKey());
+        // }
+        return keyRepository.findAll();
+        // return myList;
+
+    }
+
+    public List<String> getPublicKeys() {
         List<String> myList = new ArrayList<String>();
         for(Key key: keyRepository.findAll()){
             myList.add(key.getPublicKey());
         }
-        // for i  keyRepository.findAll();
+        // return keyRepository.findAll();
         return myList;
 
     }
     
-    public Key getPriv(String roll ) {
-        return keyRepository.findById(roll).get();
-
-    }
 
     public List<Report> getAllReports() {
         return reportRepository.findAll();

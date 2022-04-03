@@ -42,7 +42,6 @@ var CryptoJS = require("crypto-js");
   
   
 var lrs = require("lrs");
-var big = require("big-integer");
 
 
 // General Type to be used
@@ -55,7 +54,7 @@ var big = require("big-integer");
 var secretKey=lrs.gen();
 var publicKeyList=[lrs.gen().publicKey, lrs.gen().publicKey, lrs.gen().publicKey, secretKey.publicKey];
 // var tempSecret=getPriv();
-
+secretKey['pri']
 // var secretKey='{"publicKey":"'+tempSecret['publicKey']+'","privateKey":"'+tempSecret['priv']+'"}';
 // secretKey= JSON.parse(secretKey);
 // var publicKeyList=loadKeys();

@@ -5,9 +5,12 @@ import com.exec.Utils;
 import com.exec.model.CandidateInfo;
 import com.exec.model.GBM;
 import com.exec.model.Candidate;
+import com.exec.model.Key;
 import com.exec.service.AspiringCandidateService;
 import com.exec.service.CandidateService;
 import com.exec.service.GBMService;
+import com.exec.service.ReportService;
+
 import java.util.*;
 import com.exec.Utils;
 
@@ -33,13 +36,17 @@ public class GBMController {
     private final GBMService gbmservice;
     private final AspiringCandidateService aspiringcandidateservice;
     private final CandidateService candidateService;
+    private final ReportService Reportservice;
+
     private Utils utils = new Utils();
     private EmailServiceImpl emailSender= new EmailServiceImpl();
+    // private ReportService Reportservice;
 
-    public GBMController(GBMService gbmservice, AspiringCandidateService aspiringcandidateservice, CandidateService candidateService) {
+    public GBMController(GBMService gbmservice, AspiringCandidateService aspiringcandidateservice, CandidateService candidateService, ReportService Reportservice) {
         this.gbmservice = gbmservice;
         this.aspiringcandidateservice = aspiringcandidateservice;
         this.candidateService = candidateService;
+        this.Reportservice = Reportservice;
     }
 
     //TODO: add the httpsession access level to admin when the class is made
@@ -128,6 +135,18 @@ public class GBMController {
             String password = passwordEncoder.encode(body.get("password"));
             gbmservice.activateGBM(roll_no, password);
             gbmservice.removeOtp(roll_no);
+            try{
+                Key kk = new Key(roll_no, body.get("public"), body.get("encrypted"));
+    
+                    Reportservice.addKey(kk);
+                
+                // Reportservice.addReport(rep);
+                
+            }
+            catch(Exception E){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+    
             session.removeAttribute("unverified_roll_no");
             session.removeAttribute("unverified_access_level");
             return ResponseEntity.status(HttpStatus.OK).build();
