@@ -1,6 +1,9 @@
 import React,{Component} from "react";
 import { useLocation, Route, Switch, Redirect } from "react-router-dom";
+import { useState } from "react";
 import axios from "axios";
+import {lrs} from 'lrs';
+import {CryptoJS} from 'crypto-js';
 // reactstrap components
 import {
   Button,
@@ -24,6 +27,7 @@ function ReportingPortal  (props) {
   const mainContent = React.useRef(null);
   const location = useLocation();
   const base_url = "http://localhost:8080/";
+  const [keys, setKeys] = useState([]);
 
   React.useEffect(() => {
     document.body.classList.add("bg-default");
@@ -39,18 +43,55 @@ function ReportingPortal  (props) {
 
   async function addReport(event){
     event.preventDefault();
-    let link = document.getElementById("link").value;
 
     await axios
-      .get(base_url + "api/candidate/addform", {
-        "form_link": link,
-      })
+      .get(base_url + "api/report/keys/public/")
       .then((response) => {
-        alert("Form added");
+        setKeys(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
+
+    let roll_no = prompt("Please enter your roll number");
+
+    if(roll_no == null || roll_no == ""){
+      alert("No roll number added");
+      return;
+    }
+
+    var roll_key = keys.find((obj) => {obj.roll == roll_no;});
+
+    if(roll_key == undefined){
+      alert("This roll no hasn't signed up yet");
+      return;
+    }
+
+    let pub_keys = [];
+    keys.forEach((obj) => {pub_keys.append(obj.publicKey)} );
+
+    let password = prompt("Please enter your password");
+    var bytes = CryptoJS.AES.decrypt(roll_key.encryptedPriv, password);
+    var decryptedPriv = bytes.toString(CryptoJS.enc.Utf8);
+    let message = document.getElementById("message").value;
+    var secretKey='{"publicKey":'+roll_key.publicKey+', "privateKey":' + decryptedPriv + '}';
+    secretKey= JSON.parse(secretKey);
+
+    var signed = lrs.sign(pub_keys, secretKey, message);
+
+    await axios
+      .post(base_url + "api/report/post/", {
+        "message": message,
+        "signed": signed,
+      })
+      .then((response) => {
+        alert("Report added successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("some error took place");
+      });
+    
   } 
 
   return (

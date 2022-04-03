@@ -34,7 +34,7 @@ var CryptoJS = require("crypto-js");
 //     let roll= prompt("Please enter your roll number", "Roll Number");
 //     const response = await fetch('/api/report/keys/priv/?roll='+ roll);
 //     const keys = await response.json();
-//     var bytes  = CryptoJS.AES.decrypt(keys[priv], pass+keys['salt']);
+//     var bytes  = CryptoJS.AES.decrypt(keys[priv], pass);
 //     var decryptedPriv = bytes.toString(CryptoJS.enc.Utf8);
 //     keys['priv']=decryptedPriv;
 //     return keys;
