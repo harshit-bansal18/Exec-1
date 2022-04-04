@@ -16,7 +16,7 @@ public class ReportAuth {
 	// processBuilder.command("bash", "-c", "ls /home/mkyong/");
 
 	// Run a shell script
-	processBuilder.command("node ./check.js "+a+" "+b+" "+c);
+	processBuilder.command("node ./check.js ",a,b,c);
 
 	// -- Windows --
 

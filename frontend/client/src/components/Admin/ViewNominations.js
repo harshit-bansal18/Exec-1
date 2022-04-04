@@ -20,14 +20,14 @@ import axios from "axios";
 function ViewNominations(props) {
   const history = useHistory();
   const base_url = "http://localhost:8080/";
-  //  const [nominee,setNominee]=useState([{ id: 1,roll_no:'200122', name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
-  //                                    {id:2,roll_no:'200122',name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
-  //                                    {id:3,roll_no:'200122',name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-  //                                    {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
+  //  const [nominee,setNominee]=useState([{ id: 1,roll_no:'200122', name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing"},
+  //                                    {id:2,roll_no:'200122',name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing"},
+  //                                    {id:3,roll_no:'200122',name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing"},
+  //                                    {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing"},
   // ]);
   const [nominee, setNominee] = useState([]);
   const [changed, setChanged] = useState(true);
-  // const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
       async function fetchData() {
