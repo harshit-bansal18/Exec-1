@@ -28,6 +28,7 @@ function ReportingPortal  (props) {
   const base_url = "http://localhost:8080/";
   const [keys, setKeys] = useState([]);
   const lrs = require('lrs');
+  const CryptoJS = require('crypto-js');
 
   React.useEffect(() => {
     document.body.classList.add("bg-default");
@@ -43,7 +44,7 @@ function ReportingPortal  (props) {
 
   async function addReport(event){
     event.preventDefault();
-
+    //TODO: first fetch main data nahi aa rha
     await axios
       .get(base_url + "api/report/keys/public/")
       .then((response) => {
@@ -53,6 +54,7 @@ function ReportingPortal  (props) {
         console.log(error);
       });
 
+    console.log(keys);
     let roll_no = prompt("Please enter your roll number");
 
     if(roll_no == null || roll_no == ""){
@@ -68,14 +70,19 @@ function ReportingPortal  (props) {
     }
 
     let pub_keys = [];
-    keys.forEach((obj) => {pub_keys.append(obj.publicKey)} );
+    keys.forEach((obj) => {pub_keys.push(obj.publicKey)} );
 
     let password = prompt("Please enter your password");
     var bytes = CryptoJS.AES.decrypt(roll_key.encryptedPriv, password);
-    var decryptedPriv = bytes.toString(CryptoJS.enc.Utf8);
+    try{
+      var decryptedPriv = bytes.toString(CryptoJS.enc.Utf8);
+    }
+    catch(err){
+      alert("Wrong password");
+      return;
+    }
     let message = document.getElementById("message").value;
-    var secretKey='{"publicKey":'+roll_key.publicKey+', "privateKey":' + decryptedPriv + '}';
-    secretKey= JSON.parse(secretKey);
+    var secretKey={"publicKey":roll_key.publicKey, "privateKey": decryptedPriv };
 
     var signed = lrs.sign(pub_keys, secretKey, message);
 
@@ -88,8 +95,13 @@ function ReportingPortal  (props) {
         alert("Report added successfully");
       })
       .catch((error) => {
-        console.log(error);
-        alert("some error took place");
+        if(error.response != undefined && error.response.status == 401){ 
+          alert("Invalid password");
+        }
+        else{
+          console.log(error);
+          alert("some error took place");
+        }
       });
     
   } 

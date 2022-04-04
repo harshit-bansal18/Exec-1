@@ -1,5 +1,6 @@
 
 import { useState,useEffect } from "react";
+import { useHistory } from "react-router-dom";
 // node.js library that concatenates classes (strings)
 
 // reactstrap components
@@ -12,32 +13,34 @@ import {
   Col,
   CardImg
 } from "reactstrap";
+import axios from "axios";
 
 import CandidateInfoHeader from "./CandidateInfoHeader";
 
 const CandidateInfo = (props) => {
+  const history = useHistory();
   const [activeNav, setActiveNav] = useState(1);
-  
-  const [candidates, setCandidates] = useState([{ id: 1,roll_no:'200122', name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "/home/parinay/Desktop/cs253/Exec/frontend/client/src/assets/img/anonymous profile_6.jpg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
-                                     {id:2,roll_no:'200122',name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
-                                     {id:3,roll_no:'200122',name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-                                     {id:4,roll_no:'200122',name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-  ]);
+  const base_url = "http://localhost:8080/";
 
   const [filteredCandidates,setFilteredCandidates] = useState({});
-  var selectedCandidates;
   useEffect(() => {
     const params = props.match.params;
-    //alert(params.id);
+    // console.log(params.id);
+
+    async function fetchData() {
+      axios.defaults.withCredentials = true;
+      await axios
+        .get(base_url + "viewCandidate/", { params: {roll_no: params.id} })
+        .then((response) => {
+          setFilteredCandidates(response.data);
+        })
+        .catch((error) => {
+          alert("No such candidate exists");
+          history.push("/candidates");
+        });
+    }
     
-    selectedCandidates=candidates.filter(function (element) {
-      return element.id == params.id
-    }).map(function ({ id, name, desc, image_link, manifesto_link, poster_link }) {
-      console.log(name);
-      return { id, name, desc, image_link, manifesto_link, poster_link };
-    });
-    console.log(selectedCandidates);
-    setFilteredCandidates(selectedCandidates[0])
+    fetchData();
   },[]);
 
   const toggleNavs = (e, index) => {
@@ -64,7 +67,7 @@ const CandidateInfo = (props) => {
               <CardBody>
                 <div className="chart">
                   <CardImg
-                  alt="..."
+                  alt="Candidate hasn't Included a Poster Yet"
                   src={filteredCandidates && filteredCandidates.poster_link}
                   top
                 ></CardImg>
@@ -78,7 +81,7 @@ const CandidateInfo = (props) => {
                 <div className="chart">
                   <CardImg
                   alt="..."
-                  src={filteredCandidates && filteredCandidates.image_link}
+                  src={require("./photo.png").default}
                   top
                 ></CardImg>
                 </div>

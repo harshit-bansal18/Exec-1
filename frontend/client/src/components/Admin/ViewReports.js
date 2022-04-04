@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CardHeader,
   Table,
@@ -15,28 +15,41 @@ import {
     InputGroupText, Input,
 } from "reactstrap";
 // core components
-
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 function ViewReports(props) { 
-    const [reportList, setReportList] = useState(["here comes the reportaSDFGTFSASD FGDSaSDFGTFS ASDFG DSaSDFGTF SASDFGDSa SDFGTFSASDFGDSaSDFGTFSASDFGDSaSDFGTFSASDFGD SaSDFGTF SASDFGDSaSDFG TFSASDFG DSaSDFG TFSASDFGDSaSDFGTFSA SDFGDSaSDFGTFSASDFGDSaSDFG TFSASDFGDSaSDFGTFSASDFGDSa SDFGTFSASDFGDSaSDFGTFS ASDFGDSaSDFGTFSASDFGDSaSD FGTFSASDFGDSa SDFGTFSASDFGDSa SDFG TFSASDFGDSaS DFGTFSASDFGDS aSDFGTFSASDFGDSaSDFGTFSASDFGDS", "here comes the big report"]);
+    const base_url = "http://localhost:8080/";
+    const [reportList, setReportList] = useState([]);
     const [notificationModal, setNotificationModal] = useState({content:"",visible:false});
 
 
     function toggleModal(value,item) {
-        console.log("hello");
-        console.log(item);
         let info={content:item,visible:value}
-        console.log(info);
         setNotificationModal(info)
     };
+
+    useEffect(() => {
+      async function fetchData() {
+        axios.defaults.withCredentials = true;
+        await axios
+          .get(base_url + "api/report/view")
+          .then((response) => {
+            setReportList(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      fetchData();
+    }, []); 
 
     const List_ = reportList.map((list,index) => {
         return (
             <tr>
                     <th scope="row">
                           <span className="mb-0 text-sm">
-                            {index}
+                            {index + 1}
                           </span>
                        
                     </th>
@@ -79,7 +92,7 @@ function ViewReports(props) {
           <div className="modal-body">
             <div className="py-3 text-center">
               <p overflow-wrap="break-word">
-              {notificationModal.content}
+              {notificationModal.content.message}
               </p>
             </div>
           </div>

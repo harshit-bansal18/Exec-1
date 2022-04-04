@@ -80,29 +80,6 @@ public class CandidateController {
         }
     }
 
-    // //TODO: take a look at the real working of the EC ki seconders/proposers add kab hote hain
-    // @PostMapping("/addSeconder")
-    // public ResponseEntity<Object> add_Seconder(@RequestBody Map<String,String> body){
-    //     try {
-    //         candidateservice.addSeconder(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
-    //         return ResponseEntity.status(HttpStatus.OK).build();
-    //     }
-    //     catch(Exception E){
-    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    //     }
-    // }
-
-    // //TODO: same as in that of the seconder
-    // @PostMapping("/addProposer")
-    // public ResponseEntity<Object> add_Proposer(@RequestBody Map<String,String> body){
-    //     try {
-    //         candidateservice.addProposer(body.get("candidate_roll_no"), body.get("seconder_roll_no"));
-    //         return ResponseEntity.status(HttpStatus.OK).build();
-    //     }
-    //     catch(Exception E){
-    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    //     }
-    // }
     @PostMapping("/changePassword")
     public ResponseEntity<Object> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
 
@@ -316,7 +293,7 @@ public class CandidateController {
         }
     }
 
-    @PostMapping("/viewmyvideos")
+    @GetMapping("/viewmyvideos")
     public ResponseEntity<Object> view_my_videos(HttpSession session) {
         try {
             Map<String, String> response = new HashMap<String, String>();
@@ -328,9 +305,9 @@ public class CandidateController {
 
             List<String> videos = candidateservice.view_videos(roll_no);
             List<Map<String,String>> video_links = new ArrayList<>();
-            for(Integer i = 0; i < videos.size(); i++) {
+            for(Integer i = 1; i <= videos.size(); i++) {
                 response.put("name", "Video " + i.toString());
-                response.put("link", videos.get(i));
+                response.put("link", videos.get(i-1));
                 video_links.add(response);
             }
 
@@ -365,7 +342,7 @@ public class CandidateController {
     }
 
     //does reponse need "name" field?
-    @PostMapping("/viewmyposter")
+    @GetMapping("/viewmyposter")
     public ResponseEntity<Object> view_my_poster(HttpSession session) {
         try {
             Map<String, String> response = new HashMap<String, String>();
@@ -376,7 +353,7 @@ public class CandidateController {
             }
 
             String poster = candidateservice.view_poster(roll_no);
-            response.put("name", "Poster 0");
+            response.put("name", "Poster");
             response.put("link", poster);
 
             return new ResponseEntity<Object>(response, HttpStatus.OK);

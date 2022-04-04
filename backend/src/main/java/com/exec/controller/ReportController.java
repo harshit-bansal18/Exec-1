@@ -32,22 +32,19 @@ public class ReportController {
     }
 
 
-//TODO: Test if working :p
 //Open APIs---- Not to be Authenticated
     @PostMapping("/post/")
     public ResponseEntity<Object> post(@RequestBody Map<String, String> body) {
          
         try{
             Report rep = new Report(body.get("message"), body.get("signed"));
-            // if(ReportAuth.check(Reportservice.getPublicKeys().toString(), body.get("signed"), body.get("message"))){
+            if(ReportAuth.check(Reportservice.getPublicKeys().toString(), body.get("signed"), body.get("message"))){
                 Reportservice.addReport(rep);
                 return ResponseEntity.status(HttpStatus.CREATED).build(); 
-            // }
-            // else{
-            //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            // }
-            // Reportservice.addReport(rep);
-            // return ResponseEntity.status(HttpStatus.CREATED).build(); 
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             
         }
         catch(Exception E){
@@ -59,8 +56,6 @@ public class ReportController {
     public ResponseEntity<Object> getAllKeys() {
 
         try{
-            
-
             List<Key> requests = Reportservice.getKeys();
             return new ResponseEntity<Object>(requests, HttpStatus.OK);
         }
@@ -82,7 +77,7 @@ public class ReportController {
                 return new ResponseEntity<Object>(response, HttpStatus.UNAUTHORIZED);
             }
 
-            List<Report> requests = Reportservice.getAllReports();
+            List< Map<String, String> > requests = Reportservice.getAllReports();
             return new ResponseEntity<Object>(requests, HttpStatus.OK);
 
             // return ResponseEntity.status(HttpStatus.CREATED).build(); 

@@ -94,7 +94,7 @@ function ManageForms(props) {
                        
                     </th>
                     <td>
-                     <a href={item.link}>Link</a>
+                     <a href={item.link} target="blank">Link</a>
                     </td>
                      <td>
                      <button type="button" class="btn btn-danger" onClick={(e) => remove(e, item.link)}>Delete Form</button>

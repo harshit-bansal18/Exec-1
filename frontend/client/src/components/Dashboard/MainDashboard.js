@@ -1,5 +1,6 @@
 // reactstrap components
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
+import axios from 'axios';
 import {
   Button,
   Card,
@@ -24,15 +25,27 @@ import { Link,useHistory } from 'react-router-dom';
 function MainDashboard(){
   const history = useHistory();
   const [notificationModal,setNotificationModal]=useState({content:{},visible:false});
-  const [candidates, setCandidates] = useState([{ id: 1, name: "Candidate1", desc: "PRESIDENT, STUDENTS GYMKHANA", image_link: "https://eciitk.com/assets/img/executive_candidate/Ghanshyam%20Waindeshkar.jpeg", manifesto_link: "https://drive.google.com/file/d/1oixPOrMZ9oFxudLUKQalpB1dZEnP_XTg/view?usp=sharing", poster_link:"https://eciitk.com/assets/img/Posters/Ghanshyam.jpg"},
-                                     {id:2,name:"Candidate2",desc:"GENERAL SECRETARY, GAMES AND SPORTS",image_link:"https://eciitk.com/assets/img/executive_candidate/Rohit%20Kejriwal.jpeg",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Rohit.jpg"},
-                                     {id:3,name:"Candidate3",desc:"PRESIDENT, STUDENTS GYMKHANA",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-                                     {id:4,name:"Candidate4",desc:"GENERAL SECRETARY, SCIENCE AND TECHNOLOGY",image_link:"https://eciitk.com/assets/img/executive_candidate/Animesh%20Singh.png",manifesto_link:"https://drive.google.com/file/d/1AQvEHZ26kRiCbJS26g_auBEaYRgCXScR/view?usp=sharing",poster_link:"https://eciitk.com/assets/img/Posters/Animesh.jpg"},
-   ]);
+  const [candidates, setCandidates] = useState([]);
+  const base_url = "http://localhost:8080/";
   const style = {
     width: "22rem",
     height: "32rem"
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      axios.defaults.withCredentials = true;
+      await axios
+        .get(base_url + "viewCandidates")
+        .then((response) => {
+          setCandidates(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    fetchData();
+  }, []); 
 
   function toggleModal(value,item) {
     console.log("hello");
@@ -66,7 +79,7 @@ function MainDashboard(){
               <Card style={style} className="card-stats mb-3 mb-xl-0">
                 <CardImg
                   alt="..."
-                  src={item.image_link}
+                  src={require("./photo.png").default}
                   top
                 ></CardImg>
                 <CardBody>
@@ -80,7 +93,7 @@ function MainDashboard(){
                     {item.name}
                   </CardTitle>
                   <span className="text-nowrap">
-                    {item.desc}
+                    {item.post}
                   </span>
                 </div>
                 <Col className="col-auto">
@@ -93,7 +106,7 @@ function MainDashboard(){
               </Row>
               </a>
               <p className="mt-3 mb-0 text-muted text-sm">
-              <span className="text-Hex"><Link onClick={() => cardClick(item.id)}><b><Button color="info">View Candidate Details</Button></b></Link></span>
+              <span className="text-Hex"><Link onClick={() => cardClick(item.roll_no)}><b><Button color="info">View Candidate Details</Button></b></Link></span>
               </p>
             </CardBody>
               </Card>

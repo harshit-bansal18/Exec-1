@@ -26,7 +26,7 @@ const CandidateInfoHeader = (props) => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="h2 font-weight-bold mb-0">
-                          {props.candidate && props.candidate.desc}
+                          {props.candidate && props.candidate.post}
                       </span>
                     </p>
                   </CardBody>

@@ -1,5 +1,5 @@
 // reactstrap components
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 import {
   Badge,
   Card,
@@ -17,17 +17,76 @@ import {
   InputGroupText,
   InputGroup,
 } from "reactstrap";
+import axios from 'axios';
 // core components
 
 import { Link, } from 'react-router-dom';
 
 function AddVideos(props) {
     const [notificationModal, setNotificationModal] = useState({ visible: false });
+    const base_url = "http://localhost:8080/";
+    const [changed, setChanged] = useState(true);
+    const [videos, setVideos] = useState([]);
+
+    useEffect(() => {
+      async function fetchData() {
+        if(changed == true){
+          axios.defaults.withCredentials = true;
+          await axios
+            .get(base_url + "api/candidate/viewmyvideos")
+            .then((response) => {
+              setVideos(response.data);
+            })
+            .catch((error) => {
+              alert("Some error occured please try again");
+              console.log(error);
+            });
+          setChanged(false);
+        }
+      }
+      fetchData();
+    }, [changed]); 
+
+    async function addVideo(event) {
+      event.preventDefault();
+      let link = document.getElementById("link").value;
+
+      await axios
+        .post(base_url + "api/candidate/addVideos", {
+          "video_link": link,
+        })
+        .then((response) => {
+          setChanged(true);
+          alert("Video added");
+          toggleModal(false);
+        })
+        .catch((error) => {
+          alert("Some error occured please try again");
+          console.log(error);
+        });
+      };
+
     
     function toggleModal(value) {
       let info={visible:value}
       setNotificationModal(info)
-  };
+    };
+
+  const videoList = videos.map((video) => {
+    return(
+      <tr>
+        <th scope="row">
+              <span className="mb-0 text-sm">
+                {video.name}
+              </span>
+            
+        </th>
+        <td>
+          <a href = {video.link} target="blank"><button type="button" class="btn btn-success">Video Link</button></a>
+        </td>
+      </tr>
+    )
+  });
   return (
       <>
         <Modal
@@ -54,11 +113,12 @@ function AddVideos(props) {
                     placeholder="link"
                     type="link"
                     autoComplete="new-link"
+                    id="link"
                   />
                 </InputGroup>
               </FormGroup>
             <div className="text-center">
-                <Button className="my-4" color="default" type="button">
+                <Button className="my-4" color="default" type="button" onClick={(e) => addVideo(e)}>
                   Add Link
                 </Button>
             </div>
@@ -102,17 +162,7 @@ function AddVideos(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">
-                          <span className="mb-0 text-sm">
-                            Video 1
-                          </span>
-                       
-                    </th>
-                    <td>
-                     <button type="button" class="btn btn-success">Video Link</button>
-                    </td>
-                  </tr>
+                  {videoList}
                 </tbody>
               </Table>
             </Card>

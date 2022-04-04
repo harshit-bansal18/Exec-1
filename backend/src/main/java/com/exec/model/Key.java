@@ -11,10 +11,10 @@ public class Key {
     public String publicKey;
     // public String salt;
     public String encryptedPriv;
-    public Key (String roll1, String publicKey1, String encryptedPriv1){
-        roll= roll1;
-        publicKey = publicKey1;
-        encryptedPriv = encryptedPriv1;
+    public Key (String roll, String publicKey, String encryptedPriv){
+        this.roll= roll;
+        this.publicKey = publicKey;
+        this.encryptedPriv = encryptedPriv;
     }
     public String getPublicKey() {
         return publicKey;

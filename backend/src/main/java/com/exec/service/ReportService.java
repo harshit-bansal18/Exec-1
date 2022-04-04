@@ -5,8 +5,7 @@ import com.exec.repository.ReportRepository;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import com.exec.model.Key;
 import com.exec.model.Report;
 
@@ -50,8 +49,14 @@ public class ReportService {
     }
     
 
-    public List<Report> getAllReports() {
-        return reportRepository.findAll();
+    public List<Map<String, String>> getAllReports() {
+        List< Map<String, String> > report_messages = new ArrayList< Map<String, String> >();
+        for(Report report: reportRepository.findAll()){
+            Map<String, String> report_message = new HashMap<String, String>();
+            report_message.put("message", report.message);
+            report_messages.add(report_message);
+        }
+        return report_messages;
     }
 
 }
