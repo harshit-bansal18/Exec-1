@@ -12,9 +12,11 @@ import PageNotFound from 'views/examples/404Page';
 import ReportingPortal from 'components/Dashboard/ReportingPortal';
 import AdminLayout from 'layouts/AdminLayout.js';
 import AdminDashboard from 'components/Dashboard/AdminDashboard';
-
+import { PublicRoutes } from 'PublicRoutes';
+import { CandidateRoutes } from 'CandidateRoutes';
+import { GBMRoutes } from 'GBmRoutes';
+import { AdminRoutes } from 'AdminRoutes';
 export default function RoutingComponent(props) {
-  
     return (   
     <BrowserRouter>
         <Switch>
@@ -28,45 +30,40 @@ export default function RoutingComponent(props) {
         </Route>
 
         {/* general routes */}
-        
-        <Route exact path="/candidates/" render={(props) => <MainDashboardLayout {...props} />} />
-        <Route exact path="/info/:id" render={(props) => <MainDashboardLayout {...props} />} />      
-        <Route exact path="/reporting" render={(props) => <ReportingPortal {...props} />} />
-                
+        <PublicRoutes component={MainDashboardLayout} path="/candidates" exact />
+        <PublicRoutes component={MainDashboardLayout} path="/info/:id"  exact />
+        <PublicRoutes component={ReportingPortal} path="/reporting" exact />
+        <PublicRoutes component={CandidateLayout} path="/candidate/login" exact />
+        <PublicRoutes component={CandidateLayout} path="/candidate/signup" exact />
+        <PublicRoutes component={CandidateLayout} path="/candidate/otp-verification" exact/>
+        <PublicRoutes component={AdminLayout} path="/admin/login" exact />
+        <PublicRoutes component={SignIn} path="/gbm/login" exact/>
+        <PublicRoutes component={SignUp} path="/gbm/signup" exact/>
+        <PublicRoutes component={OTPVerification} path="/gbm/otp-verification" exact/>
+        <PublicRoutes exact path="/pagenotfound" component={PageNotFound} />
+
 
         {/* candidate routes         */}
-        <Route exact path="/candidate/login" render={(props) => <CandidateLayout {...props} />} />
-        <Route exact path="/candidate/signup" render={(props) => <CandidateLayout {...props} />} />
-        <Route exact path="/candidate/forget" render={(props) => <CandidateLayout {...props} />} />
-        <Route exact path="/candidate/request-campaigner" render={(props) => <CandidateDashboard {...props} />} />
-        <Route exact path="/candidate/dashboard" render={(props) => <CandidateDashboard {...props} />} />
-        <Route exact path="/candidate/profile" render={(props) => <CandidateDashboard {...props} />} />
-        <Route exact path="/candidate/add-videos" render={(props) => <CandidateDashboard {...props} />} />
-        <Route exact path="/candidate/add-posters" render={(props) => <CandidateDashboard {...props} />} />
-        <Route exact path="/candidate/manage-forms" render={(props) => <CandidateDashboard {...props} />} />
-        <Route exact path="/candidate/otp-verification" render={(props) => <CandidateLayout {...props} />} />
-                
+
+        <CandidateRoutes component={CandidateDashboard} path="/candidate/dashboard" exact/>
+        <CandidateRoutes component={CandidateDashboard} path="/candidate/add-videos" exact/>
+        <CandidateRoutes component={CandidateDashboard} path="/candidate/add-posters" exact/>
+        <CandidateRoutes component={CandidateDashboard} path="/candidate/manage-forms" exact/>
+        <CandidateRoutes component={CandidateDashboard} path="/candidate/request-campaigner" exact/>
         
-                {/* <Route exact path="/candidates/:id" render={(props) => <ReportingPortal {...props} />} /> */}
         
         {/* gbm routes */}
-        <Route exact path="/gbm/dashboard" render={(props) => <GBMLayout {...props} />} />
-        <Route exact path="/gbm/profile" render={(props) => <GBMLayout {...props} />} />
-        <Route exact path="/gbm/nomination" render={(props) => <GBMLayout {...props} />} />
-        <Route exact path="/gbm/campaign-request" render={(props) => <GBMLayout {...props} />} />
-        <Route exact path="/gbm/login" children={<SignIn/>} />
-        <Route exact path="/gbm/signup" children={<SignUp />}/>
-        <Route exact path="/gbm/forget" children={<ForgetPassword />} />
-        <Route exact path="/gbm/otp-verification" children={<OTPVerification />} />
-                
-
+       
+        <GBMRoutes component={GBMLayout} path="/gbm/dashboard" exact/>
+        <GBMRoutes component={GBMLayout} path="/gbm/nomination" exact/>
+        <GBMRoutes component={GBMLayout} path="/gbm/campaign-request" exact/>
         {/* admin routes */}
-        <Route exact path="/admin/login" render={(props)=><AdminLayout {...props}/>} />
-        <Route exact path="/admin/dashboard" render={(props) => <AdminDashboard {...props} />} />
-        <Route exact path="/admin/view-nominations" render={(props) => <AdminDashboard {...props} />} />
-        <Route exact path="/admin/manage-penalty" render={(props) => <AdminDashboard {...props} />} />
-        <Route exact path="/admin/info/:id" render={(props) => <AdminDashboard {...props} />} />
-        <Route exact path="/pagenotfound" children={<PageNotFound />} />
+   
+        <AdminRoutes component={AdminDashboard} path="/admin/dashboard" exact/>
+        <AdminRoutes component={AdminDashboard} path="/admin/view-nominations" exact/>
+        <AdminRoutes component={AdminDashboard} path="/admin/manage-penalty" exact/>
+        <AdminRoutes component={AdminDashboard} path="/admin/info/:id" exact/> 
+        
     </Switch>
   </BrowserRouter>
        
